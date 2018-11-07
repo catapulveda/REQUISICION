@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane id="AnchorPane" fx:id="anchorPane" prefHeight="224.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.RecepcionDePedidosController">
+   <children>
+      <VBox fx:id="vbox" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <ToolBar fx:id="toolBar">
+              <items>
+                <Button fx:id="btnAgregar" mnemonicParsing="false" onAction="#agregarFactura">
+                     <graphic>
+                        <FontAwesomeIconView glyphName="PLUS" size="16" />
+                     </graphic></Button>
+                  <Button fx:id="btnAdjuntar" mnemonicParsing="false" onAction="#verFacturas">
+                     <graphic>
+                        <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/adjuntar.png" />
+                           </image>
+                        </ImageView>
+                     </graphic></Button>
+              </items>
+            </ToolBar>
+            <TableView fx:id="tabla" VBox.vgrow="ALWAYS">
+              <columns>
+                <TableColumn fx:id="colFecha" prefWidth="75.0" text="FECHA" />
+                  <TableColumn fx:id="colCantidad" prefWidth="75.0" text="CANT." />
+                  <TableColumn fx:id="colValorFinal" prefWidth="75.0" text="VLR FINAL" />
+                  <TableColumn fx:id="colFactura" prefWidth="75.0" text="FACTURA" />
+                  <TableColumn fx:id="colRemision" prefWidth="75.0" text="REMISION" />
+                  <TableColumn fx:id="colObservacion" prefWidth="75.0" text="OBSERVACIONES" />
+                  <TableColumn fx:id="colFechaRegistro" prefWidth="75.0" text="FECHA REGISTRO" />
+              </columns>
+            </TableView>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

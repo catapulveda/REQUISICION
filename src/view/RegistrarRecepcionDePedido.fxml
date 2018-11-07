@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXDatePicker?>
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<AnchorPane id="AnchorPane" fx:id="ap" prefHeight="307.0" prefWidth="291.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.RegistrarRecepcionDePedidoController">
+   <children>
+      <GridPane layoutX="15.0" layoutY="15.0" prefHeight="467.0" prefWidth="379.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <columnConstraints>
+          <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="332.0" minWidth="10.0" prefWidth="114.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="500.0" minWidth="10.0" prefWidth="167.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Label text="Fecha de Recepcion:" />
+            <JFXDatePicker fx:id="cjFecha" GridPane.columnIndex="1" />
+            <Label text="Nº Factura:" GridPane.rowIndex="1" />
+            <Label text="Nº Remision:" GridPane.rowIndex="2" />
+            <Label text="Cantidad:" GridPane.rowIndex="3" />
+            <Label text="Valor:" GridPane.rowIndex="4" />
+            <Label text="Observaciones:" GridPane.rowIndex="5" />
+            <JFXButton fx:id="btnGuardar" onAction="#guardar" text="Guardar" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="7">
+               <styleClass>
+                  <String fx:value="btn" />
+                  <String fx:value="btn-primary" />
+                  <String fx:value="btn-sm" />
+               </styleClass>
+            </JFXButton>
+            <TextField fx:id="cjFactura" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <TextField fx:id="cjRemision" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <TextField fx:id="cjCantidad" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <TextField fx:id="cjValor" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <TextArea fx:id="cjObservaciones" prefHeight="113.0" prefWidth="258.0" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+            <HBox fx:id="hBoxAdjuntos" alignment="CENTER" onDragDropped="#OnDragDropped" onDragExited="#onDragExited" onDragOver="#OnDragOver" prefHeight="100.0" prefWidth="200.0" spacing="5.0" style="-fx-border-color: black;" GridPane.columnSpan="2" GridPane.rowIndex="6" />
+         </children>
+      </GridPane>
+   </children>
+   <padding>
+      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+   </padding>
+</AnchorPane>

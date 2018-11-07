@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane id="AnchorPane" fx:id="ap" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.BuscarTodoController">
+   <children>
+      <VBox fx:id="vbox" prefHeight="400.0" prefWidth="600.0" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <HBox fx:id="hbox" prefWidth="200.0">
+               <children>
+                  <TextField fx:id="cjBuscar" onKeyReleased="#buscarProducto" promptText="Buscar producto / proveedor" HBox.hgrow="ALWAYS" />
+               </children>
+            </HBox>
+            <TableView fx:id="tabla" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+              <columns>
+                <TableColumn fx:id="colReq" prefWidth="75.0" text="# REQ" />
+                <TableColumn fx:id="colOC" prefWidth="75.0" text="# O.C" />
+                  <TableColumn fx:id="colProveedor" prefWidth="75.0" text="PROVEEDOR" />
+                  <TableColumn fx:id="colProducto" prefWidth="75.0" text="PRODUCTO / SERVICIO" />
+              </columns>
+            </TableView>
+         </children>
+      </VBox>
+   </children>
+   <padding>
+      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+   </padding>
+</AnchorPane>

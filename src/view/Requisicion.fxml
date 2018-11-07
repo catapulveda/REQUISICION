@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXTabPane?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane id="AnchorPane" fx:id="anchorPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="480.0" prefWidth="700.0" style="-fx-border-width: 2; -fx-border-color: black;" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.RequisicionController">
+   <children>
+      <JFXTabPane fx:id="tabPane" prefHeight="480.0" prefWidth="700.0" tabClosingPolicy="ALL_TABS" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <tabs>
+            <Tab text="Requisiciones">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <VBox prefHeight="180.0" prefWidth="696.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <ToolBar prefHeight="40.0" prefWidth="200.0">
+                                <items>
+                                  <Button fx:id="btnListar" mnemonicParsing="false" onAction="#cargarRequisiciones" text="Listar">
+                                       <styleClass>
+                                          <String fx:value="btn" />
+                                          <String fx:value="btn-primary" />
+                                          <String fx:value="btn-sm" />
+                                       </styleClass>
+                                       <graphic>
+                                          <FontAwesomeIconView glyphName="LIST" size="16.0" />
+                                       </graphic>
+                                    </Button>
+                                    <Separator orientation="VERTICAL" />
+                                    <Button fx:id="btnImprimir" mnemonicParsing="false" onAction="#imprimirRequisicion" text="Imprimir">
+                                       <styleClass>
+                                          <String fx:value="btn" />
+                                          <String fx:value="btn-default" />
+                                          <String fx:value="btn-sm" />
+                                       </styleClass>
+                                       <graphic>
+                                          <FontAwesomeIconView glyphName="PRINT" size="16.0" />
+                                       </graphic>
+                                    </Button>
+                                    <Separator orientation="VERTICAL" />
+                                    <Button fx:id="btnEditar" mnemonicParsing="false" onAction="#editar" text="Ver / Editar">
+                                       <styleClass>
+                                          <String fx:value="btn" />
+                                          <String fx:value="btn-info" />
+                                          <String fx:value="btn-sm" />
+                                       </styleClass>
+                                       <graphic>
+                                          <FontAwesomeIconView glyphName="EYE" size="16.0" />
+                                       </graphic>
+                                    </Button>
+                                    <Separator orientation="VERTICAL" />
+                                    <Button fx:id="btnNuevo" mnemonicParsing="false" onAction="#nueva" text="Nuevo">
+                                       <styleClass>
+                                          <String fx:value="btn" />
+                                          <String fx:value="btn-success" />
+                                          <String fx:value="btn-sm" />
+                                       </styleClass>
+                                       <graphic>
+                                          <FontAwesomeIconView glyphName="FILE_ALT" size="16.0" />
+                                       </graphic>
+                                    </Button>
+                                </items>
+                              </ToolBar>
+                              <HBox>
+                                 <children>
+                                    <JFXTextField fx:id="cjBuscar" onKeyReleased="#buscar" promptText="Buscar..." unFocusColor="#d14836" HBox.hgrow="ALWAYS" />
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </padding>
+                              </HBox>
+                              <TableView fx:id="tablaRequisiciones" prefHeight="319.0" prefWidth="450.0" VBox.vgrow="ALWAYS">
+                                <columns>
+                                    <TableColumn fx:id="colItem" prefWidth="75.0" text="#" />
+                                  <TableColumn fx:id="colNumeroRequisicion" prefWidth="75.0" text="Nº" />
+                                    <TableColumn fx:id="colFecha" prefWidth="75.0" text="FECHA" />
+                                    <TableColumn fx:id="colTotalProductos" prefWidth="75.0" text="# ITEMS" />
+                                  <TableColumn fx:id="colReferencia" prefWidth="75.0" text="REFERENCIA" />
+                                </columns>
+                              </TableView>
+                           </children>
+                        </VBox>
+                     </children>
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                  </AnchorPane>
+              </content>
+            </Tab>
+         </tabs>
+      </JFXTabPane>
+   </children>
+</AnchorPane>

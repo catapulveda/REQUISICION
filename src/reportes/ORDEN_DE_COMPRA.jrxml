@@ -1,0 +1,686 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ORDEN" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="b688c86a-8ef6-4ecc-8470-8d45a0a922e9">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="table">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+			<topPen lineWidth="0.0"/>
+			<leftPen lineWidth="0.0"/>
+			<bottomPen lineWidth="0.0"/>
+			<rightPen lineWidth="0.0"/>
+		</box>
+	</style>
+	<style name="DETALLE" mode="Transparent" backcolor="#FFFFFF">
+		<box rightPadding="0">
+			<pen lineWidth="0.125" lineColor="#000000"/>
+			<topPen lineWidth="0.125"/>
+			<leftPen lineWidth="0.125"/>
+			<bottomPen lineWidth="0.125"/>
+			<rightPen lineWidth="0.125"/>
+		</box>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean($V{REPORT_COUNT}.intValue()%2==0)]]></conditionExpression>
+			<style mode="Opaque" backcolor="#EFF7FF"/>
+		</conditionalStyle>
+	</style>
+	<style name="table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.125" lineColor="#000000"/>
+			<topPen lineWidth="0.125"/>
+			<leftPen lineWidth="0.125"/>
+			<bottomPen lineWidth="0.125"/>
+			<rightPen lineWidth="0.125"/>
+		</box>
+	</style>
+	<subDataset name="PEDIDO" uuid="49b93b71-b60c-4a0d-bb64-76874deed468">
+		<parameter name="IDORDEN_TABLA" class="java.lang.Integer" isForPrompting="false"/>
+		<parameter name="IVA" class="java.lang.Integer" isForPrompting="false"/>
+		<queryString>
+			<![CDATA[SELECT p.nombreproducto, p.medida, ped.cantidadsolicitada, ped.precioinicial, ped.observaciones, 
+(ped.cantidadsolicitada*ped.precioinicial) as total
+FROM pedidos ped
+INNER JOIN producto p ON p.idproducto=ped.idproducto
+WHERE idordendecompra=$P{IDORDEN_TABLA} ORDER BY p.nombreproducto;]]>
+		</queryString>
+		<field name="nombreproducto" class="java.lang.String"/>
+		<field name="medida" class="java.lang.String"/>
+		<field name="cantidadsolicitada" class="java.lang.Integer"/>
+		<field name="precioinicial" class="java.lang.Double"/>
+		<field name="observaciones" class="java.lang.String"/>
+		<field name="total" class="java.lang.Double"/>
+		<variable name="SUBTOTAL" class="java.lang.Double" calculation="Sum">
+			<variableExpression><![CDATA[$F{total}]]></variableExpression>
+		</variable>
+	</subDataset>
+	<parameter name="IDORDEN" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT pv.*, req.numerorequisicion, 
+ur.nombreusuario as ur, uc.nombreusuario as uc, oc.* 
+FROM ordendecompra oc
+INNER JOIN proveedor pv ON pv.idproveedor=oc.idproveedor
+INNER JOIN pedidos ped ON ped.idordendecompra=oc.idordendecompra
+INNER JOIN requisicion req ON req.idrequisicion=ped.idrequisicion
+INNER JOIN usuario ur ON ur.idusuario=req.idusuario
+INNER JOIN usuario uc ON uc.idusuario=oc.idusuario
+WHERE oc.idordendecompra=$P{IDORDEN}
+GROUP BY oc.idordendecompra, pv.idproveedor,
+req.numerorequisicion, ur.nombreusuario, uc.nombreusuario;]]>
+	</queryString>
+	<field name="idproveedor" class="java.lang.Integer"/>
+	<field name="nombreprovee" class="java.lang.String"/>
+	<field name="nitprovee" class="java.lang.String"/>
+	<field name="direccionprovee" class="java.lang.String"/>
+	<field name="telefonofijoprovee" class="java.lang.String"/>
+	<field name="celularprovee" class="java.lang.String"/>
+	<field name="correoprovee" class="java.lang.String"/>
+	<field name="paginawebprovee" class="java.lang.String"/>
+	<field name="fechaderegistro" class="java.sql.Timestamp"/>
+	<field name="fechaactualizado" class="java.sql.Timestamp"/>
+	<field name="idusuario" class="java.lang.Integer"/>
+	<field name="ciudad" class="java.lang.String"/>
+	<field name="numerorequisicion" class="java.lang.Integer"/>
+	<field name="ur" class="java.lang.String"/>
+	<field name="uc" class="java.lang.String"/>
+	<field name="idordendecompra" class="java.lang.Integer"/>
+	<field name="numerodeorden" class="java.lang.Integer"/>
+	<field name="fechadeorden" class="java.sql.Date"/>
+	<field name="condestinoa" class="java.lang.String"/>
+	<field name="contacto" class="java.lang.String"/>
+	<field name="concargoa" class="java.lang.String"/>
+	<field name="transportador" class="java.lang.String"/>
+	<field name="numerodeguia" class="java.lang.String"/>
+	<field name="formadepago" class="java.lang.String"/>
+	<field name="observaciones" class="java.lang.String"/>
+	<field name="idrequisicion" class="java.lang.Integer"/>
+	<field name="fechadeactualizado" class="java.sql.Timestamp"/>
+	<field name="iva" class="java.lang.Integer"/>
+	<field name="exentodeiva" class="java.lang.Boolean"/>
+	<field name="centrodecostos" class="java.lang.String"/>
+	<background>
+		<band height="752" splitType="Stretch">
+			<image scaleImage="RetainShape" hAlign="Center" vAlign="Middle">
+				<reportElement mode="Transparent" x="143" y="188" width="286" height="376" uuid="597083df-37ad-4274-844e-c50d8d1711c5"/>
+				<imageExpression><![CDATA[getClass().getResource("/recursos/images/LOGO CONSORCIO MARCA DE AGUA.png")]]></imageExpression>
+			</image>
+		</band>
+	</background>
+	<pageHeader>
+		<band height="207" splitType="Stretch">
+			<rectangle radius="5">
+				<reportElement mode="Transparent" x="480" y="15" width="92" height="50" uuid="dc036402-a022-4517-98e0-d38146a15b8c"/>
+				<graphicElement>
+					<pen lineWidth="0.25"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle radius="5">
+				<reportElement mode="Opaque" x="0" y="92" width="285" height="15" backcolor="#BFE1FF" uuid="3e2f1bef-b83c-4205-8711-f900fe92cfcb"/>
+				<graphicElement>
+					<pen lineWidth="0.25"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle radius="5">
+				<reportElement mode="Transparent" x="0" y="92" width="285" height="107" uuid="51081fa0-5ab1-4d60-8d6e-b059985e9058"/>
+				<graphicElement>
+					<pen lineWidth="0.25" lineStyle="Solid"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="483" y="16" width="88" height="28" uuid="f4019d66-767b-4ac4-abed-8d9c676f2d9c"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<text><![CDATA[ORDEN DE COMPRA Y/O SERVICIO]]></text>
+			</staticText>
+			<rectangle radius="5">
+				<reportElement mode="Transparent" x="299" y="92" width="273" height="107" uuid="ff2a046b-bd28-4750-8ee9-69c53369cd35"/>
+				<graphicElement>
+					<pen lineWidth="0.25" lineStyle="Solid"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="152" y="0" width="260" height="34" uuid="679fa44d-6278-4d18-a6d7-a69905a999d9"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="13" isBold="true"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[CDM MANTENIMIENTO Y SERVICIOS LTDA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="152" y="36" width="260" height="11" uuid="f41fdc83-d9fb-41d3-9380-faf3eff6d30e"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Franklin Gothic Medium" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Autopista a San Antonio Cra 7 No. 10-196]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="152" y="66" width="260" height="11" uuid="3ec22827-d8f1-4d05-b428-cddefa8ac7ee"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Franklin Gothic Medium" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NIT: 900.342.895-7]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="152" y="46" width="260" height="11" uuid="e35cc567-a87b-4e26-a19b-fed2df9c5eec"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Franklin Gothic Medium" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Villa del Rosario, Norte de Santander - Colombia.]]></text>
+			</staticText>
+			<image hAlign="Center" vAlign="Middle">
+				<reportElement x="0" y="0" width="87" height="80" uuid="9ad8e328-8041-4620-9daa-9ce02dbc391f"/>
+				<imageExpression><![CDATA[getClass().getResource("/images/LOGO_CONSORCIO.png")]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="483" y="44" width="88" height="20" uuid="11c0f046-0b53-4748-bc44-5fbdbabc0097"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA["No "+$F{numerodeorden}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="482" y="43" width="90" height="1" uuid="c494544d-c77c-492f-9bca-6377e0af0d71"/>
+				<graphicElement>
+					<pen lineWidth="0.25"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="4" y="108" width="52" height="15" uuid="8e2ec827-20f6-4275-8e3b-6226afd77b4c"/>
+				<textElement verticalAlignment="Middle" markup="none">
+					<font fontName="Ebrima" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Proveedor:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="4" y="123" width="52" height="15" uuid="ff9c6e7f-d91d-434e-94f0-f7dff59f9bcb"/>
+				<textElement verticalAlignment="Middle" markup="none">
+					<font fontName="Ebrima" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Direccion:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="4" y="153" width="52" height="15" uuid="9eb0e2de-f26c-4f4a-b7ac-ed85a6b6cb1b"/>
+				<textElement verticalAlignment="Middle" markup="none">
+					<font fontName="Ebrima" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Telefono:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="58" y="123" width="227" height="15" uuid="a1bc0733-7093-41a4-9476-a3ad915be4c1"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Ebrima" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{direccionprovee}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="58" y="153" width="227" height="15" uuid="5276a55b-018c-4dbe-8b5b-ddae6a0aab20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Ebrima" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{telefonofijoprovee}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="58" y="108" width="227" height="15" uuid="4b4d3216-806d-4230-9fe7-9b5e8f0b4d30"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Ebrima" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombreprovee}+" / "+$F{nitprovee}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="392" y="138" width="167" height="15" uuid="0e81f07f-3086-44e4-9802-f53d442d43ce"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Ebrima" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{numerorequisicion}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="392" y="108" width="167" height="15" uuid="172f5fa7-f995-4389-88c0-37dc3fcbd63a"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Ebrima" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{formadepago}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="303" y="108" width="89" height="15" uuid="ddf4ce55-f063-488c-afb1-c8318f104fd4"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle" markup="none">
+					<font fontName="Ebrima" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Forma de Pago:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="303" y="123" width="89" height="15" uuid="685507bc-5ae0-4b15-97a7-7c56247bf363"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle" markup="none">
+					<font fontName="Ebrima" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Cargo flete:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="303" y="138" width="89" height="15" uuid="240f1010-bc5a-42e0-bd86-621cf2d3a171"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle" markup="none">
+					<font fontName="Ebrima" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Requisicion No:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="392" y="123" width="167" height="15" uuid="e289bb3c-a746-40ec-88a0-0853ca950268"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Ebrima" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{concargoa}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="303" y="168" width="89" height="15" uuid="6dd4a2c6-2448-4b7e-826c-5f12f167af34"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle" markup="none">
+					<font fontName="Ebrima" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Fecha:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="392" y="168" width="167" height="15" uuid="49224c7c-0864-4d09-b2f9-8078628af9b0"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Ebrima" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new SimpleDateFormat("EEE dd 'de' MMM 'del' yyyy").format($F{fechadeorden})]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="303" y="153" width="89" height="15" uuid="3348a081-b87b-426b-a891-b09743d313cb"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle" markup="none">
+					<font fontName="Ebrima" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Solicitado por:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="392" y="153" width="167" height="15" uuid="1abf4ea8-9410-412d-be66-efd1b6ec1259"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Ebrima" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ur}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="58" y="168" width="227" height="15" uuid="e90b424b-0108-4e83-848d-67b38e31ca71"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Ebrima" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{correoprovee}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="4" y="168" width="52" height="15" uuid="254d971d-c76d-4f11-a4a6-4dac7011a314"/>
+				<textElement verticalAlignment="Middle" markup="none">
+					<font fontName="Ebrima" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Email:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="4" y="183" width="52" height="15" uuid="eb1f41df-76e0-4b98-967a-3a26c25d742f"/>
+				<textElement verticalAlignment="Middle" markup="none">
+					<font fontName="Ebrima" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Contacto:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="58" y="183" width="227" height="15" uuid="262f7b42-ac72-4f13-b7dc-003cdbeccf46"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Ebrima" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{contacto}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="4" y="92" width="281" height="15" backcolor="#BFE1FF" uuid="7657a9a8-ab28-42ee-8e8c-47110a171b27"/>
+				<textElement verticalAlignment="Middle" markup="none">
+					<font fontName="Ebrima" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DATOS DEL PROVEEDOR:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="152" y="56" width="260" height="11" uuid="1634fa01-3dc1-4d90-ab08-a62889e2b4f2"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Franklin Gothic Medium" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tel.: (7) 5732010 - 5732013 - 5732014]]></text>
+			</staticText>
+			<rectangle radius="5">
+				<reportElement mode="Opaque" x="299" y="92" width="273" height="15" backcolor="#BFE1FF" uuid="e6f1fe79-bab5-4a78-9201-15c39cb206f8"/>
+				<graphicElement>
+					<pen lineWidth="0.25"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="301" y="92" width="269" height="15" backcolor="#BFE1FF" uuid="819de75f-1957-4bed-9995-feae8d9b592f"/>
+				<textElement verticalAlignment="Middle" markup="none">
+					<font fontName="Ebrima" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DATOS DE ORDEN:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="58" y="138" width="227" height="15" uuid="f47c9c53-b22b-4c10-98f0-d19c7179c8d7"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Ebrima" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ciudad}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="4" y="138" width="52" height="15" uuid="42deaecb-0dcf-425a-b71a-a5a2b071692c"/>
+				<textElement verticalAlignment="Middle" markup="none">
+					<font fontName="Ebrima" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Ciudad:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="303" y="183" width="89" height="15" uuid="95d2ad1b-3500-4a8c-b1bc-3d7081c7d76d"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle" markup="none">
+					<font fontName="Ebrima" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Centro de Costos:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="392" y="183" width="167" height="15" uuid="2b2176b4-932c-40ef-87c5-adcde71bf5fb"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Ebrima" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{centrodecostos}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="60" splitType="Stretch">
+			<componentElement>
+				<reportElement key="table" style="table" x="0" y="0" width="572" height="60" uuid="d1bd40ed-38b2-496d-8aa2-5569ab61f028"/>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="PEDIDO" uuid="41a874b5-03c4-4d40-a151-a003ba773a1a">
+						<datasetParameter name="IDORDEN_TABLA">
+							<datasetParameterExpression><![CDATA[$P{IDORDEN}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="IVA">
+							<datasetParameterExpression><![CDATA[$F{iva}]]></datasetParameterExpression>
+						</datasetParameter>
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:column width="29" uuid="addc9734-55b5-4ddf-86f2-96e7919cdd72">
+						<jr:columnHeader style="table_CH" height="20" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="29" height="20" uuid="5774dcc5-038d-49ad-af48-b495cb53811f"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<text><![CDATA[ITEM]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="DETALLE" height="18" rowSpan="1">
+							<textField>
+								<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="29" height="18" uuid="b67e752e-c750-4131-83c7-ebd83debe179"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Ebrima" size="8"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="286" uuid="4341611a-1ad3-4e46-9efa-3bfdabe45796">
+						<jr:columnHeader style="table_CH" height="20" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="286" height="20" uuid="cfc2291f-04ad-4600-93fa-98100ed045d6"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<text><![CDATA[DESCRIPCION]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="DETALLE" height="18" rowSpan="1">
+							<textField isStretchWithOverflow="true">
+								<reportElement x="0" y="0" width="286" height="18" uuid="754e13c3-8d2b-43f8-9a9d-ba280a075506"/>
+								<textElement verticalAlignment="Middle">
+									<font fontName="Ebrima" size="8"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{nombreproducto}+"\n* "+$F{observaciones}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="38" uuid="2531066a-6348-466f-9313-7ab53b3b223a">
+						<jr:columnHeader style="table_CH" height="20" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="38" height="20" uuid="cb396602-1c0f-4fc6-8a2a-e1f0d501a59c"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<text><![CDATA[UND]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="DETALLE" height="18" rowSpan="1">
+							<textField>
+								<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="38" height="18" uuid="9f196ad6-68db-4500-94bf-16cc66d493c7"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Ebrima" size="7"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{medida}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="39" uuid="c5cffc66-197e-4ce4-bb34-52d506c8a65e">
+						<jr:columnHeader style="table_CH" height="20" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="39" height="20" uuid="74c34f77-d622-4d30-b226-2ebd3e85b8a7"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<text><![CDATA[CANT.]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="DETALLE" height="18" rowSpan="1">
+							<textField>
+								<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="39" height="18" uuid="59609191-5ff9-42ed-827c-ff80ef29bbae"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Ebrima" size="9"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{cantidadsolicitada}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:columnGroup width="90" uuid="d24a4b5a-a40f-4c76-a0c6-dc77e8f7b4b4">
+						<jr:columnGroup width="90" uuid="f2b79501-6281-40ca-a5fb-72665af605cc">
+							<jr:tableFooter style="table_CH" height="20" rowSpan="1">
+								<box>
+									<leftPen lineWidth="0.25"/>
+									<rightPen lineWidth="0.25"/>
+								</box>
+								<staticText>
+									<reportElement x="0" y="0" width="90" height="20" uuid="2d43af19-e2ec-44f6-8dc6-8db82166ffdf"/>
+									<textElement textAlignment="Right" verticalAlignment="Middle">
+										<font fontName="Ebrima" size="8"/>
+									</textElement>
+									<text><![CDATA[Total:]]></text>
+								</staticText>
+							</jr:tableFooter>
+							<jr:columnGroup width="90" uuid="2338cd21-baf6-4fe7-bf58-1754348b157a">
+								<jr:tableFooter style="table_CH" height="20" rowSpan="1">
+									<textField>
+										<reportElement x="0" y="0" width="90" height="20" uuid="dc623923-b34e-4d13-a32f-31dfd99c569b"/>
+										<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+											<font fontName="Ebrima" size="8"/>
+										</textElement>
+										<textFieldExpression><![CDATA["IVA: "+$P{IVA}+"%"]]></textFieldExpression>
+									</textField>
+								</jr:tableFooter>
+								<jr:column width="90" uuid="8cf93cc7-94d5-4ba9-83ec-82367c50829b">
+									<jr:tableFooter style="table_CH" height="20" rowSpan="1">
+										<staticText>
+											<reportElement x="0" y="0" width="90" height="20" uuid="f8baa9b3-a6bd-4e67-b988-e61c38a67f4b"/>
+											<textElement textAlignment="Right" verticalAlignment="Middle">
+												<font fontName="Ebrima" size="8"/>
+											</textElement>
+											<text><![CDATA[Subtotal:]]></text>
+										</staticText>
+									</jr:tableFooter>
+									<jr:columnHeader style="table_CH" height="20" rowSpan="1">
+										<staticText>
+											<reportElement x="0" y="0" width="90" height="20" uuid="e6559d63-eefc-4e2b-be17-fa2254d7dbb0"/>
+											<textElement textAlignment="Center" verticalAlignment="Middle"/>
+											<text><![CDATA[VLR UNITARIO]]></text>
+										</staticText>
+									</jr:columnHeader>
+									<jr:detailCell style="DETALLE" height="18" rowSpan="1">
+										<textField pattern="¤ #,##0.00">
+											<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="85" height="18" uuid="8a52c915-a521-496a-9e06-3cc25e7ee43e"/>
+											<textElement textAlignment="Right" verticalAlignment="Middle">
+												<font fontName="Ebrima" size="9"/>
+											</textElement>
+											<textFieldExpression><![CDATA[$F{precioinicial}]]></textFieldExpression>
+										</textField>
+									</jr:detailCell>
+								</jr:column>
+							</jr:columnGroup>
+						</jr:columnGroup>
+					</jr:columnGroup>
+					<jr:columnGroup width="90" uuid="f5f188ea-906e-4ce0-acdd-a512af14e7f0">
+						<jr:columnGroup width="90" uuid="10dc0d44-6004-42ec-8376-0cc5e6120b8b">
+							<jr:tableFooter style="table_CH" height="20" rowSpan="1">
+								<textField pattern="¤ #,##0.00">
+									<reportElement x="0" y="0" width="85" height="20" uuid="a08ece3a-0568-42e0-a627-8c5a20327fcc"/>
+									<textElement textAlignment="Right" verticalAlignment="Middle">
+										<font fontName="Ebrima" size="9"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$V{SUBTOTAL}*$P{IVA}/100+$V{SUBTOTAL}]]></textFieldExpression>
+								</textField>
+							</jr:tableFooter>
+							<jr:columnGroup width="90" uuid="7122428f-d7ab-44ec-9320-d8f81c9af6ad">
+								<jr:tableFooter style="table_CH" height="20" rowSpan="1">
+									<textField pattern="¤ #,##0.00">
+										<reportElement x="0" y="0" width="85" height="20" uuid="88160f98-0f5e-4c39-877b-6fa6ab345a06"/>
+										<textElement textAlignment="Right" verticalAlignment="Middle">
+											<font fontName="Ebrima" size="9"/>
+										</textElement>
+										<textFieldExpression><![CDATA[$V{SUBTOTAL}*$P{IVA}/100]]></textFieldExpression>
+									</textField>
+								</jr:tableFooter>
+								<jr:column width="90" uuid="9c99b378-9fb9-48bf-bcde-883dff353179">
+									<jr:tableFooter style="table_CH" height="20" rowSpan="1">
+										<textField pattern="¤ #,##0.00">
+											<reportElement x="0" y="0" width="85" height="20" uuid="3f137154-4fc9-47b6-8232-b0e5c38f5510"/>
+											<textElement textAlignment="Right" verticalAlignment="Middle">
+												<font fontName="Ebrima" size="9"/>
+											</textElement>
+											<textFieldExpression><![CDATA[$V{SUBTOTAL}]]></textFieldExpression>
+										</textField>
+									</jr:tableFooter>
+									<jr:columnHeader style="table_CH" height="20" rowSpan="1">
+										<staticText>
+											<reportElement x="0" y="0" width="90" height="20" uuid="4b90fe0b-af98-4d66-a356-2a4c331f204b"/>
+											<textElement textAlignment="Center" verticalAlignment="Middle"/>
+											<text><![CDATA[VLR TOTAL]]></text>
+										</staticText>
+									</jr:columnHeader>
+									<jr:detailCell style="DETALLE" height="18" rowSpan="1">
+										<textField pattern="¤ #,##0.00">
+											<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="85" height="18" uuid="403e77d1-1562-4ffe-b3c6-3f41475bee67"/>
+											<textElement textAlignment="Right" verticalAlignment="Middle">
+												<font fontName="Ebrima" size="9"/>
+											</textElement>
+											<textFieldExpression><![CDATA[$F{total}]]></textFieldExpression>
+										</textField>
+									</jr:detailCell>
+								</jr:column>
+							</jr:columnGroup>
+						</jr:columnGroup>
+					</jr:columnGroup>
+				</jr:table>
+			</componentElement>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="23">
+			<textField>
+				<reportElement mode="Transparent" x="1" y="12" width="572" height="10" uuid="668bb828-4bfb-4c5f-9f25-affd51b8060a"/>
+				<textElement verticalAlignment="Bottom">
+					<font fontName="Franklin Gothic Medium" size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Realizado por: "+$F{uc}+" - Fecha y hora de impresion: "+new SimpleDateFormat("EEE, dd MMM yyyy hh:mm a").format(new java.util.Date())]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="398" y="12" width="166" height="10" uuid="e4e1258a-c647-4c2a-9b6e-5d4cd7652819"/>
+				<textElement textAlignment="Right" verticalAlignment="Bottom">
+					<font fontName="Franklin Gothic Medium" size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Pagina "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="533" y="12" width="40" height="10" uuid="67d142bd-8dd5-4d0a-be3b-1baa953696f0"/>
+				<textElement textAlignment="Right" verticalAlignment="Bottom">
+					<font fontName="Franklin Gothic Medium" size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="407" y="2" width="166" height="10" uuid="27fdf773-e899-47d1-9822-cf393a02749c"/>
+				<textElement textAlignment="Right" verticalAlignment="Bottom" markup="none">
+					<font fontName="Franklin Gothic Medium" size="7" isBold="false"/>
+				</textElement>
+				<text><![CDATA[PA-02-02-R-03 | V. 1 | 18/05/2017]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+	<lastPageFooter>
+		<band height="86">
+			<rectangle radius="5">
+				<reportElement mode="Opaque" x="0" y="2" width="292" height="12" backcolor="#BFE1FF" uuid="31e3db05-b9a8-491e-b3d4-e5dc2dc21c65"/>
+				<graphicElement>
+					<pen lineWidth="0.25"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle radius="5">
+				<reportElement x="296" y="2" width="276" height="60" uuid="d19091eb-c7e7-4da3-948b-02630dad9c30"/>
+				<graphicElement>
+					<pen lineWidth="0.25"/>
+				</graphicElement>
+			</rectangle>
+			<textField>
+				<reportElement mode="Transparent" x="0" y="75" width="572" height="10" uuid="ff7b7fdc-87f6-4f80-abae-047abcabea70"/>
+				<textElement verticalAlignment="Bottom">
+					<font fontName="Franklin Gothic Medium" size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Realizado por: "+$F{uc}+" - Fecha y hora de impresion: "+new SimpleDateFormat("EEE, dd MMM yyyy hh:mm a").format(new java.util.Date())]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="397" y="75" width="166" height="10" uuid="f4f016b7-ae52-46d1-8e78-1e782c1b492a"/>
+				<textElement textAlignment="Right" verticalAlignment="Bottom">
+					<font fontName="Franklin Gothic Medium" size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Pagina "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="532" y="75" width="40" height="10" uuid="3861503c-fe6d-44b9-bff7-f7022a7211f8"/>
+				<textElement textAlignment="Right" verticalAlignment="Bottom">
+					<font fontName="Franklin Gothic Medium" size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="406" y="65" width="166" height="10" uuid="c30f40ce-afd5-4761-a0eb-f2eb941ab84f"/>
+				<textElement textAlignment="Right" verticalAlignment="Bottom" markup="none">
+					<font fontName="Franklin Gothic Medium" size="7" isBold="false"/>
+				</textElement>
+				<text><![CDATA[PA-02-02-R-03 | V. 1 | 18/05/2017]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="300" y="46" width="227" height="14" uuid="fc19080a-7fc6-4a35-ac56-cb5674d00a1b"/>
+				<textElement verticalAlignment="Middle" markup="none">
+					<font fontName="Ebrima" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Firma autorizada:]]></text>
+			</staticText>
+			<rectangle radius="5">
+				<reportElement mode="Transparent" x="0" y="2" width="292" height="60" uuid="8be441eb-3e2e-4384-9fdc-e4064b0a68ac"/>
+				<graphicElement>
+					<pen lineWidth="0.25"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement mode="Transparent" x="2" y="0" width="100" height="14" uuid="27350649-db63-48b1-b654-7b7db1fedfa0"/>
+				<textElement verticalAlignment="Middle" markup="none">
+					<font fontName="Ebrima" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Observaciones:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="2" y="16" width="288" height="44" uuid="4d1020df-8ad8-4f76-bf11-5bd3d1246aff"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{observaciones}]]></textFieldExpression>
+			</textField>
+		</band>
+	</lastPageFooter>
+</jasperReport>

@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Implementation-Title: bootstrapfx-core
+Build-Date: 2016-12-29
+Implementation-Version: 0.2.1
+Built-By: aalmiray
+Build-Revision: 93021bd3fe879eddebe54c54ba7c905a422f9479
+Specification-Title: bootstrapfx-core
+Build-Time: 00:31:25.586+0100
+Created-By: 1.8.0_112 (Oracle Corporation 25.112-b16)
+Specification-Version: 0.2.1
+

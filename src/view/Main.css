@@ -1,0 +1,30 @@
+.button:hover{
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
+    -fx-cursor: hand;
+}
+
+#barra .button{
+    -fx-text-fill: white;    
+}
+
+#barra{
+    -fx-background-color: linear-gradient(rgba(65,128,185,.9), #61a2b1);    
+}
+
+#barra .button:hover{
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, white, .4,.4,.4,.4);
+    -fx-border-width: 0 0 3 0;
+    -fx-border-color: yellowgreen;
+}
+
+#barra .button:pressed{
+    -fx-translate-y: -5;
+}
+
+.separator:vertical *.line {
+    -fx-border-width: 0.3px, 0.3px, 0.3px, 0.3px;
+    -fx-border-color: white;
+    -fx-border-style: dashed;
+}
+
