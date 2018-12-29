@@ -144,7 +144,7 @@ public class RecepcionDePedidosController implements Initializable {
                 try {                
                     Desktop.getDesktop().open(c.getFile().toFile());
                 } catch (IOException ex) {
-                    Logger.getLogger(RequisicionNuevaController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(RequisicionNuevaController2.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });

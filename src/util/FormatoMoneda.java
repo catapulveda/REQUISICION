@@ -96,7 +96,6 @@ public class FormatoMoneda<T> extends TableCell<T, Double>{
         textField.setText("");
         setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
         textField.requestFocus();
-        //textField.selectAll();
         textField.end();
     }
 

@@ -381,7 +381,7 @@ public class RequisicionNuevaController2 implements Initializable {
                     listaPedidos.removeIf(t -> Objects.equals(t.getProducto().getIdproducto(), ped.getProducto().getIdproducto()));
                     tablaPedido.getItems().remove(tablaPedido.getSelectionModel().getSelectedItem());
                 }                    
-            }catch(Exception ex){Logger.getLogger(RequisicionNuevaController.class.getName()).log(Level.SEVERE, null, ex);}
+            }catch(Exception ex){Logger.getLogger(RequisicionNuevaController2.class.getName()).log(Level.SEVERE, null, ex);}
         }
     };
     
@@ -417,7 +417,7 @@ public class RequisicionNuevaController2 implements Initializable {
                                     }
                                 }                                
                             } catch (IOException | SQLException ex) {
-                                Logger.getLogger(RequisicionNuevaController.class.getName()).log(Level.SEVERE, null, ex);
+                                Logger.getLogger(RequisicionNuevaController2.class.getName()).log(Level.SEVERE, null, ex);
                             }finally{}
                         }
                         cargarCotizaciones();
@@ -526,7 +526,7 @@ public class RequisicionNuevaController2 implements Initializable {
             try {
                 con.getCon().rollback();
             } catch (SQLException ex1) {
-                Logger.getLogger(RequisicionNuevaController.class.getName()).log(Level.SEVERE, null, ex1);
+                Logger.getLogger(RequisicionNuevaController2.class.getName()).log(Level.SEVERE, null, ex1);
             }
             util.Metodos.alert("Error", "No se pudo registrar el PRODUCTO / SERVICIO a la requisicion", null, Alert.AlertType.ERROR, ex, null);
             Logger.getLogger(RequisicionController.class.getName()).log(Level.SEVERE, null, ex);
@@ -649,7 +649,7 @@ public class RequisicionNuevaController2 implements Initializable {
                 try {                
                     Desktop.getDesktop().open(c.getFile().toFile());
                 } catch (IOException ex) {
-                    Logger.getLogger(RequisicionNuevaController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(RequisicionNuevaController2.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });
@@ -741,7 +741,7 @@ public class RequisicionNuevaController2 implements Initializable {
             listaOrdenes.setAll(ocDAO.getOrdenes(con));
         } catch (SQLException ex) {
             util.Metodos.alert("ERROR", null, "NO SE PUDO CARGAR LOS DATOS DE LA REQUISICION", Alert.AlertType.ERROR, ex, null);
-            Logger.getLogger(RequisicionNuevaController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(RequisicionNuevaController2.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             con.CERRAR();
         }

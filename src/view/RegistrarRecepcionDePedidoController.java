@@ -144,7 +144,7 @@ public class RegistrarRecepcionDePedidoController implements Initializable {
                                 hBoxAdjuntos.getChildren().add(new Label(nombre));
                             }
                         } catch (IOException ex) {
-                            Logger.getLogger(RequisicionNuevaController.class.getName()).log(Level.SEVERE, null, ex);
+                            Logger.getLogger(RequisicionNuevaController2.class.getName()).log(Level.SEVERE, null, ex);
                         }finally{}
                     });
                 }
