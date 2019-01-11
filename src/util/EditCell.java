@@ -32,15 +32,13 @@ public class EditCell<S, T> extends TextFieldTableCell<S, T> {
         return forTableColumn(new DefaultStringConverter());
     }
 
-    public static <S, T> Callback<TableColumn<S, T>, TableCell<S, T>> forTableColumn(
-            final StringConverter<T> converter) {
+    public static <S, T> Callback<TableColumn<S, T>, TableCell<S, T>> forTableColumn(final StringConverter<T> converter) {
         return list -> new EditCell<S, T>(converter);
     }
 
     @Override
     public void startEdit() {
-        if (!isEditable() || !getTableView().isEditable()
-                || !getTableColumn().isEditable()) {
+        if (!isEditable() || !getTableView().isEditable() || !getTableColumn().isEditable()) {
             return;
         }
         super.startEdit();

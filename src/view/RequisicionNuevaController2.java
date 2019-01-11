@@ -200,8 +200,9 @@ public class RequisicionNuevaController2 implements Initializable {
         });
 
         tablaPedido.setOnKeyPressed(event -> {
-            if (/*event.getCode().isLetterKey() ||*/ event.getCode().isDigitKey() || event.getCode() == KeyCode.BACK_SPACE) {
-                final TablePosition<Pedido, ?> focusedCell = tablaPedido.focusModelProperty().get().focusedCellProperty().get();                
+            if (/*event.getCode().isLetterKey() ||*/ 
+                    event.getCode().isDigitKey() || event.getCode() == KeyCode.BACK_SPACE) {
+                final TablePosition<Pedido, ?> focusedCell = tablaPedido.focusModelProperty().get().focusedCellProperty().get();
                 tablaPedido.edit(focusedCell.getRow(), focusedCell.getTableColumn());
             } else if (event.getCode() == KeyCode.RIGHT || event.getCode() == KeyCode.TAB || event.getCode() == KeyCode.ENTER) {
                 tablaPedido.getSelectionModel().selectNext();
