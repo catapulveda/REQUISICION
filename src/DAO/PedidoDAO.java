@@ -39,7 +39,7 @@ public class PedidoDAO {
             Pedido ped = new Pedido();
             ped.setIdpedido(rs.getInt("idpedido"));
             ped.setProducto(p);
-            ped.setCantidadsolicitada(rs.getInt("cantidadsolicitada"));
+            ped.setCantidadsolicitada(rs.getDouble("cantidadsolicitada"));
             ped.setPrecioinicial(rs.getDouble("precioinicial"));
             ped.setObservaciones((rs.getString("observaciones")!=null)?rs.getString("observaciones"):"GG");
             ped.setOc(oc);

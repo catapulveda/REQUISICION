@@ -12,10 +12,13 @@ import model.RecepcionDePedido;
 
 public class RecepcionDePedidoDAO {
 
-    public RecepcionDePedidoDAO() {
+    Conexion con;
+
+    public RecepcionDePedidoDAO(Conexion con) {
+        this.con = con;
     }
-    
-    public ObservableList<RecepcionDePedido> getPedidos(Pedido pedido, Conexion con) throws SQLException{
+           
+    public ObservableList<RecepcionDePedido> getPedidos(Pedido pedido) throws SQLException{
         ObservableList<RecepcionDePedido> recepciones = FXCollections.observableArrayList();        
         String sql = "SELECT rp.*, u.nombreusuario FROM recepciondepedidos rp\n" +
         "INNER JOIN pedidos ped ON ped.idpedido=rp.idpedido\n" +
@@ -39,7 +42,7 @@ public class RecepcionDePedidoDAO {
         return recepciones;
     }
     
-    public int guardar(RecepcionDePedido rp, Conexion con) throws SQLException{
+    public int guardar(RecepcionDePedido rp) throws SQLException{
         String sql = "INSERT INTO recepciondepedidos (idpedido,fechaderecibido,cantidadrecibida,preciofinal, ";
                sql += "factura,remision,observaciones,idusuario)";
                sql += "VALUES ("+rp.getPedido().getIdpedido()+" , '"+rp.getFechaderecibido()+"' , "+rp.getCantidadrecibida()+" , "+rp.getPreciofinal()+" , ";
@@ -52,5 +55,10 @@ public class RecepcionDePedidoDAO {
             return rs.getInt(1);
         }
         return 0;
+    }
+    
+    public int borrar(RecepcionDePedido rp) throws SQLException{
+        String sql = "DELETE FROM recepciondepedidos WHERE idrecepciondepedido="+rp.getIdrecepciondepedido()+";";
+        return con.GUARDAR(sql);
     }
 }

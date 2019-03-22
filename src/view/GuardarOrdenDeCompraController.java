@@ -149,9 +149,9 @@ public class GuardarOrdenDeCompraController implements Initializable {
             util.Metodos.alert("Mensaje", "Ocurrio un error al intentar guardar la orden de compra", null, Alert.AlertType.ERROR, ex, null);
         }finally{
             con.CERRAR();
-            Platform.runLater(() -> {
-               btnGuardar.setDisable(false); 
-            });
+//            Platform.runLater(() -> {
+//               btnGuardar.setDisable(false); 
+//            });
         }
     }
 

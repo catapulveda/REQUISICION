@@ -147,6 +147,13 @@ public class CurrencyCell<T> extends TableCell<T, Double>{
     }
 
     @Override
+    public void commitEdit(Double newValue) {
+        super.commitEdit(newValue);
+        setContentDisplay(ContentDisplay.TEXT_ONLY);
+        getTableView().requestFocus();
+    }
+    
+    @Override
     public void cancelEdit() {
         if(esc){
             setText(format.format(getItem()));
@@ -158,11 +165,6 @@ public class CurrencyCell<T> extends TableCell<T, Double>{
         setContentDisplay(ContentDisplay.TEXT_ONLY);
     }
 
-    @Override
-    public void commitEdit(Double newValue) {
-        super.commitEdit(newValue);
-        setContentDisplay(ContentDisplay.TEXT_ONLY);
-        getTableView().requestFocus();
-    }
+    
     
 }

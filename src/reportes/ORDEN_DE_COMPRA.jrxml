@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ORDEN" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="b688c86a-8ef6-4ecc-8470-8d45a0a922e9">
-	<property name="ireport.zoom" value="1.0"/>
-	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="259"/>
+	<property name="ireport.y" value="492"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#000000"/>
@@ -608,7 +608,7 @@ req.numerorequisicion, ur.nombreusuario, uc.nombreusuario;]]>
 				<textElement textAlignment="Right" verticalAlignment="Bottom" markup="none">
 					<font fontName="Franklin Gothic Medium" size="7" isBold="false"/>
 				</textElement>
-				<text><![CDATA[PA-02-02-R-03 | V. 1 | 18/05/2017]]></text>
+				<text><![CDATA[F-GCA-01-02-02 | V. 02 | 12/02/2019]]></text>
 			</staticText>
 		</band>
 	</pageFooter>
@@ -652,7 +652,7 @@ req.numerorequisicion, ur.nombreusuario, uc.nombreusuario;]]>
 				<textElement textAlignment="Right" verticalAlignment="Bottom" markup="none">
 					<font fontName="Franklin Gothic Medium" size="7" isBold="false"/>
 				</textElement>
-				<text><![CDATA[PA-02-02-R-03 | V. 1 | 18/05/2017]]></text>
+				<text><![CDATA[F-GCA-01-02-02 | V. 02 | 12/02/2019]]></text>
 			</staticText>
 			<staticText>
 				<reportElement mode="Transparent" x="300" y="46" width="227" height="14" uuid="fc19080a-7fc6-4a35-ac56-cb5674d00a1b"/>

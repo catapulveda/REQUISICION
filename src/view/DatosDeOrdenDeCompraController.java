@@ -180,9 +180,9 @@ public class DatosDeOrdenDeCompraController implements Initializable {
             protected void updateItem(Integer item, boolean empty) {
                 super.updateItem(item, empty);
                 if(item!=null){
-                    int solicitada = getTableView().getItems().get(getIndex()).getPedido().getCantidadsolicitada();
-                    int recibida = getTableView().getItems().get(getIndex()).getCantidadrecibida();
-                    int pendiente = solicitada-recibida;
+                    Double solicitada = getTableView().getItems().get(getIndex()).getPedido().getCantidadsolicitada();
+                    double recibida = getTableView().getItems().get(getIndex()).getCantidadrecibida();
+                    double pendiente = solicitada-recibida;
                     setText(String.valueOf(pendiente));
                     setAlignment(Pos.CENTER);
                     setTextFill(Color.ANTIQUEWHITE);

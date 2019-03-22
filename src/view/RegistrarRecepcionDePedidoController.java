@@ -24,11 +24,14 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import model.Conexion;
 import model.Cotizacion;
@@ -55,8 +58,8 @@ public class RegistrarRecepcionDePedidoController implements Initializable {
     private Conexion con;
     
     @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+    public void initialize(URL url, ResourceBundle rb) {                
+        
     }
     
     @FXML
@@ -81,14 +84,14 @@ public class RegistrarRecepcionDePedidoController implements Initializable {
         rp.setPreciofinal(valor);
         rp.setRemision(remision);
         
-        RecepcionDePedidoDAO rpDAO = new RecepcionDePedidoDAO();
+        con = new Conexion();
+        RecepcionDePedidoDAO rpDAO = new RecepcionDePedidoDAO(con);
         try {
-            int n = 0;
-            con = new Conexion();
+            int n = 0;            
             if(listaFacturas.size()>0){
                 con.getCon().setAutoCommit(false);
             }
-            if((n=rpDAO.guardar(rp, con))>0){
+            if((n=rpDAO.guardar(rp))>0){
                 for(Cotizacion e : listaFacturas){
                     String sql = "INSERT INTO facturas (idrecepciondepedido,archivo,formato,nombrearchivo) VALUES ("+n+" , ?, '"+e.getFormato()+"' , '"+e.getNombre()+"')";
                     try {
@@ -110,6 +113,8 @@ public class RegistrarRecepcionDePedidoController implements Initializable {
                 Logger.getLogger(RegistrarRecepcionDePedidoController.class.getName()).log(Level.SEVERE, null, ex1);
             }
             util.Metodos.alert("Error", "No se pudo guardar", null, Alert.AlertType.ERROR, ex, null);
+        }finally{
+            con.CERRAR();
         }
     }
 
@@ -130,22 +135,9 @@ public class RegistrarRecepcionDePedidoController implements Initializable {
                 () -> {
                     int count = 0;
                     lista.forEach((File file) -> {
-                        try {
-                            if(file.isFile()){
-                                String nombre = file.getName().substring(0, file.getName().lastIndexOf("."));
-                                String formato = file.getName().substring(file.getName().lastIndexOf(".") + 1);
-                                byte[] bytes = Files.readAllBytes(file.toPath());
-                                Cotizacion cot = new Cotizacion();
-                                cot.setArchivo(bytes);
-                                cot.setFormato(formato);
-                                cot.setNombre(nombre);
-                                
-                                listaFacturas.add(cot);
-                                hBoxAdjuntos.getChildren().add(new Label(nombre));
-                            }
-                        } catch (IOException ex) {
-                            Logger.getLogger(RequisicionNuevaController2.class.getName()).log(Level.SEVERE, null, ex);
-                        }finally{}
+                        if(file.isFile()){
+                            adjuntarFactura(file);
+                        }
                     });
                 }
             );
@@ -169,6 +161,34 @@ public class RegistrarRecepcionDePedidoController implements Initializable {
     @FXML
     void onDragExited(DragEvent event){
         hBoxAdjuntos.getStyleClass().clear();        
+    }
+
+    @FXML
+    private void abrirArchivo(MouseEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Buscar Imagen");       
+        File file = fileChooser.showOpenDialog(ap.getScene().getWindow());
+        // Mostar la imagen
+        if (file != null) {            
+            adjuntarFactura(file.getAbsoluteFile());
+        }
+    }
+    
+    public void adjuntarFactura(File file){
+        try {
+            String nombre = file.getName().substring(0, file.getName().lastIndexOf("."));
+            String formato = file.getName().substring(file.getName().lastIndexOf(".") + 1);
+            byte[] bytes = Files.readAllBytes(file.toPath());
+            Cotizacion cot = new Cotizacion();
+            cot.setArchivo(bytes);
+            cot.setFormato(formato);
+            cot.setNombre(nombre);
+            
+            listaFacturas.add(cot);
+            hBoxAdjuntos.getChildren().add(new Label(nombre));
+        } catch (IOException ex) {
+            Logger.getLogger(RegistrarRecepcionDePedidoController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
 }

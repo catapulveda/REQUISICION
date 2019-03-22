@@ -495,7 +495,7 @@ public class RequisicionController implements Initializable {
         }
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/RequisicionNueva.fxml"));
         AnchorPane root = loader.load();
-        RequisicionNuevaController2 rnc = (RequisicionNuevaController2)loader.getController();
+        RequisicionNuevaController rnc = (RequisicionNuevaController)loader.getController();
         rnc.setRc(this);
         tabPane.getTabs().add(new Tab("REQ # "+(num_req+1), root));
         tabPane.getSelectionModel().selectLast();
@@ -506,7 +506,7 @@ public class RequisicionController implements Initializable {
         if(null != req){            
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/RequisicionNueva.fxml"));
             AnchorPane root = loader.load();
-            RequisicionNuevaController2 rnc = (RequisicionNuevaController2)loader.getController();
+            RequisicionNuevaController rnc = (RequisicionNuevaController)loader.getController();
             rnc.setIdrequisicion(req);
             rnc.cjreferencia.setText(req.getReferencia());            
             rnc.setRc(this);            

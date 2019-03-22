@@ -17,7 +17,7 @@ public class Pedido {
     private IntegerProperty idpedido;
     private Requisicion requisicion;
     private Producto producto;
-    private IntegerProperty cantidadsolicitada;
+    private DoubleProperty cantidadsolicitada;
     private DoubleProperty precioinicial;
     private StringProperty observaciones;
     private ObjectProperty<LocalDateTime> fechaRegistro;
@@ -39,15 +39,15 @@ public class Pedido {
         return idpedido;
     }
 
-    public final int getCantidadsolicitada() {
+    public final double getCantidadsolicitada() {
         return cantidadsolicitada.get();
     }
 
-    public final void setCantidadsolicitada(int value) {
-        cantidadsolicitada = new SimpleIntegerProperty(value);
+    public final void setCantidadsolicitada(double value) {
+        cantidadsolicitada = new SimpleDoubleProperty(value);
     }
 
-    public IntegerProperty cantidadsolicitadaProperty() {
+    public DoubleProperty cantidadsolicitadaProperty() {
         return cantidadsolicitada;
     }
 

@@ -1,7 +1,9 @@
 package model;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
@@ -71,8 +73,8 @@ public class Cotizacion {
         this.fecha = fecha;
     }
     
-    public Path getFile() throws IOException{
-        return Files.write(new File(toString()).toPath(), getArchivo());
+    public Path getFile() throws IOException{        
+        return Files.write(File.createTempFile(this.nombre, "."+this.formato).toPath(), getArchivo());
     }
 
 }
