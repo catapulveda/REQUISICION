@@ -46,7 +46,7 @@ WHERE idordendecompra=$P{IDORDEN_TABLA} ORDER BY p.nombreproducto;]]>
 		</queryString>
 		<field name="nombreproducto" class="java.lang.String"/>
 		<field name="medida" class="java.lang.String"/>
-		<field name="cantidadsolicitada" class="java.lang.Integer"/>
+		<field name="cantidadsolicitada" class="java.lang.Double"/>
 		<field name="precioinicial" class="java.lang.Double"/>
 		<field name="observaciones" class="java.lang.String"/>
 		<field name="total" class="java.lang.Double"/>

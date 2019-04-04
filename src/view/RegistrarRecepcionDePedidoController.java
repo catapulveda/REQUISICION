@@ -53,7 +53,7 @@ public class RegistrarRecepcionDePedidoController implements Initializable {
     
     @FXML HBox hBoxAdjuntos;
     
-    private Pedido pedido;
+    private RecepcionDePedido pedido;
     private ObservableList<Cotizacion> listaFacturas = FXCollections.observableArrayList();
     private Conexion con;
     
@@ -71,7 +71,7 @@ public class RegistrarRecepcionDePedidoController implements Initializable {
         LocalDate fecha = cjFecha.getValue();
         String factura = cjFactura.getText();
         String remision = cjRemision.getText();
-        int cantidad = Integer.parseInt(cjCantidad.getText());
+        double cantidad = Double.parseDouble(cjCantidad.getText());
         double valor = Double.parseDouble(cjValor.getText());
         String observaciones = cjObservaciones.getText();
         
@@ -80,7 +80,7 @@ public class RegistrarRecepcionDePedidoController implements Initializable {
         rp.setFactura(factura);
         rp.setFechaderecibido(fecha);
         rp.setObservaciones(observaciones);
-        rp.setPedido(pedido);
+        rp.setPedido(getRecepcionDePedido().getPedido());
         rp.setPreciofinal(valor);
         rp.setRemision(remision);
         
@@ -92,8 +92,9 @@ public class RegistrarRecepcionDePedidoController implements Initializable {
                 con.getCon().setAutoCommit(false);
             }
             if((n=rpDAO.guardar(rp))>0){
-                for(Cotizacion e : listaFacturas){
-                    String sql = "INSERT INTO facturas (idrecepciondepedido,archivo,formato,nombrearchivo) VALUES ("+n+" , ?, '"+e.getFormato()+"' , '"+e.getNombre()+"')";
+                getRecepcionDePedido().setCantidadrecibida( (getRecepcionDePedido().getCantidadrecibida()+cantidad) );
+                listaFacturas.forEach((e) -> {
+                    String sql = "INSERT INTO facturas (idordendecompra,archivo,formato,nombrearchivo) VALUES ("+getRecepcionDePedido().getPedido().getOc().getIdordendecompra()+" , ?, '"+e.getFormato()+"' , '"+e.getNombre()+"')";
                     try {
                         PreparedStatement pst = con.getCon().prepareStatement(sql);
                         pst.setBytes(1, e.getArchivo());
@@ -103,7 +104,7 @@ public class RegistrarRecepcionDePedidoController implements Initializable {
                     } catch (SQLException ex) {
                         Logger.getLogger(RegistrarRecepcionDePedidoController.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                }
+                });
                 ((Stage)ap.getScene().getWindow()).close();
             }
         }catch(SQLException ex){
@@ -118,11 +119,11 @@ public class RegistrarRecepcionDePedidoController implements Initializable {
         }
     }
 
-    public Pedido getPedido() {
+    public RecepcionDePedido getRecepcionDePedido() {
         return pedido;
     }
 
-    public void setPedido(Pedido pedido) {
+    public void setPedido(RecepcionDePedido pedido) {
         this.pedido = pedido;
     }
 
@@ -181,7 +182,7 @@ public class RegistrarRecepcionDePedidoController implements Initializable {
             byte[] bytes = Files.readAllBytes(file.toPath());
             Cotizacion cot = new Cotizacion();
             cot.setArchivo(bytes);
-            cot.setFormato(formato);
+            cot.setFormato(formato.toLowerCase());
             cot.setNombre(nombre);
             
             listaFacturas.add(cot);

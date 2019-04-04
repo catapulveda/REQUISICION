@@ -2,9 +2,11 @@ package model;
 
 import java.time.LocalDate;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -27,7 +29,9 @@ public class OrdenDeCompra {
     private BooleanProperty exentodeiva;
     private Usuario idusuario;
     private ObjectProperty<LocalDate> fechaderegistro;
-
+    private final DoubleProperty solicitados = new SimpleDoubleProperty();
+    private final DoubleProperty recibidos = new SimpleDoubleProperty();   
+        
     public OrdenDeCompra() {
     }        
 
@@ -189,6 +193,30 @@ public class OrdenDeCompra {
 
     public void setCentrodecostos(String centrodecostos) {
         this.centrodecostos = new SimpleStringProperty(centrodecostos);
+    }   
+    
+    public double getRecibidos() {
+        return recibidos.get();
+    }
+
+    public void setRecibidos(double value) {
+        recibidos.set(value);
+    }
+
+    public DoubleProperty recibidosProperty() {
+        return recibidos;
+    }    
+
+    public double getSolicitados() {
+        return solicitados.get();
+    }
+
+    public void setSolicitados(double value) {
+        solicitados.set(value);
+    }
+
+    public DoubleProperty solicitadosProperty() {
+        return solicitados;
     }
     
     @Override

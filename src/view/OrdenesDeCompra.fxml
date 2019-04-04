@@ -23,6 +23,8 @@
                                     <TableColumn fx:id="colOpciones" prefWidth="75.0" text="VER / EDITAR" />
                                   <TableColumn fx:id="colNumeroOrden" prefWidth="75.0" text="# ORDEN" />
                                     <TableColumn fx:id="colProveedor" prefWidth="75.0" text="PROVEEDOR" />
+                                    <TableColumn fx:id="colSolicitados" prefWidth="75.0" text="SOLICITADO" />
+                                    <TableColumn fx:id="colRecibidos" prefWidth="75.0" text="RECIBIDO" />
                                     <TableColumn fx:id="colCentroDeCostos" prefWidth="75.0" text="CENTRO DE COSTOS" />
                                 </columns>
                               </TableView>

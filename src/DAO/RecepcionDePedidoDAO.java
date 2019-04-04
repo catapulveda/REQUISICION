@@ -28,7 +28,7 @@ public class RecepcionDePedidoDAO {
         while(rs.next()){
             RecepcionDePedido rp = new RecepcionDePedido();
             rp.setIdrecepciondepedido(rs.getInt("idrecepciondepedido"));
-            rp.setCantidadrecibida(rs.getInt("cantidadrecibida"));
+            rp.setCantidadrecibida(rs.getDouble("cantidadrecibida"));
             rp.setFactura(rs.getString("factura"));
             rp.setFechaderecibido(rs.getDate("fechaderecibido").toLocalDate());
             rp.setFechaderegistro(rs.getDate("fechaderegistro").toLocalDate());

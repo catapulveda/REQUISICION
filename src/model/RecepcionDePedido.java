@@ -15,7 +15,7 @@ public class RecepcionDePedido {
     private IntegerProperty idrecepciondepedido;
     private Pedido pedido;
     private ObjectProperty<LocalDate> fechaderecibido;
-    private IntegerProperty cantidadrecibida;
+    private DoubleProperty cantidadrecibida;
     private DoubleProperty preciofinal;
     private StringProperty factura;
     private StringProperty remision;
@@ -53,15 +53,15 @@ public class RecepcionDePedido {
         return fechaderecibido;
     }
 
-    public final int getCantidadrecibida() {
+    public final double getCantidadrecibida() {
         return cantidadrecibida.get();
     }
 
-    public final void setCantidadrecibida(int value) {
-        cantidadrecibida = new SimpleIntegerProperty(value);
+    public final void setCantidadrecibida(double value) {
+        cantidadrecibida = new SimpleDoubleProperty(value);
     }
 
-    public IntegerProperty cantidadrecibidaProperty() {
+    public DoubleProperty cantidadrecibidaProperty() {
         return cantidadrecibida;
     }
 

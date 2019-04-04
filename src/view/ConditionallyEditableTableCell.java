@@ -32,8 +32,8 @@ public class ConditionallyEditableTableCell extends Application {
 
         PseudoClass editableCssClass = PseudoClass.getPseudoClass("editable");
 
-        Callback<TableColumn<Item, String>, TableCell<Item, String>> defaultTextFieldCellFactory 
-            = TextFieldTableCell.<Item>forTableColumn();
+        Callback<TableColumn<Item, String>, TableCell<Item, String>> defaultTextFieldCellFactory
+                = TextFieldTableCell.<Item>forTableColumn();
 
         nameCol.setCellFactory(col -> {
             TableCell<Item, String> cell = defaultTextFieldCellFactory.call(col);
@@ -51,13 +51,13 @@ public class ConditionallyEditableTableCell extends Application {
                 }
                 cell.pseudoClassStateChanged(editableCssClass, cell.isEditable());
             });
-            return cell ;
+            return cell;
         });
 
         table.getColumns().addAll(canEditCol, nameCol);
 
-        for (int i=1; i<=20; i++) {
-            table.getItems().add(new Item("Item "+i, i));
+        for (int i = 1; i <= 20; i++) {
+            table.getItems().add(new Item("Item " + i, i));
         }
 
         Scene scene = new Scene(new BorderPane(table), 600, 400);
@@ -68,16 +68,16 @@ public class ConditionallyEditableTableCell extends Application {
         primaryStage.show();
     }
 
-    private <S,T> TableColumn<S,T> createCol(String title, Function<S, ObservableValue<T>> property) {
-        TableColumn<S,T> col = new TableColumn<>(title);
+    private <S, T> TableColumn<S, T> createCol(String title, Function<S, ObservableValue<T>> property) {
+        TableColumn<S, T> col = new TableColumn<>(title);
         col.setCellValueFactory(cellData -> property.apply(cellData.getValue()));
-        return col ;
+        return col;
     }
 
     public static class Item {
+
         private final IntegerProperty value = new SimpleIntegerProperty();
         private final StringProperty name = new SimpleStringProperty();
-
 
         public Item(String name, int value) {
             setName(name);
@@ -87,9 +87,11 @@ public class ConditionallyEditableTableCell extends Application {
         public final StringProperty nameProperty() {
             return this.name;
         }
+
         public final java.lang.String getName() {
             return this.nameProperty().get();
         }
+
         public final void setName(final java.lang.String name) {
             this.nameProperty().set(name);
         }
@@ -97,9 +99,11 @@ public class ConditionallyEditableTableCell extends Application {
         public final IntegerProperty valueProperty() {
             return this.value;
         }
+
         public final int getValue() {
             return this.valueProperty().get();
         }
+
         public final void setValue(final int value) {
             this.valueProperty().set(value);
         }

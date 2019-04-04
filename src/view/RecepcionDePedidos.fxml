@@ -25,7 +25,7 @@
                         <FontAwesomeIconView glyphName="MINUS" size="16" />
                      </graphic>
                   </Button>
-                  <Button fx:id="btnAdjuntar" mnemonicParsing="false" onAction="#verFacturas" text="Ver facturas">
+                  <Button fx:id="btnAdjuntar" mnemonicParsing="false" onAction="#verFacturas" text="Ver facturas" visible="false">
                      <graphic>
                         <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -35,7 +35,7 @@
                      </graphic></Button>
               </items>
             </ToolBar>
-            <TableView fx:id="tabla" onDragExited="#OnDragExited" onDragOver="#OnDragOver" onKeyPressed="#borrarFacturaKeyPressed" VBox.vgrow="ALWAYS">
+            <TableView fx:id="tabla" onKeyPressed="#borrarFacturaKeyPressed" VBox.vgrow="ALWAYS">
               <columns>
                 <TableColumn fx:id="colFecha" prefWidth="75.0" text="FECHA" />
                   <TableColumn fx:id="colCantidad" prefWidth="75.0" text="CANT." />

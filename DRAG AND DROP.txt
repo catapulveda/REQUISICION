@@ -1,0 +1,52 @@
+tabla.setRowFactory(tv->{
+            TableRow<RecepcionDePedido> row = new TableRow<>();            
+
+            row.setOnDragOver(event -> {
+                int dropIndex = (row.isEmpty())?tabla.getItems().size():row.getIndex();
+                tabla.getSelectionModel().select(dropIndex);                
+            });
+
+            row.setOnDragDropped(e -> {
+                final Dragboard db = e.getDragboard(); 
+                List<File> lista = e.getDragboard().getFiles();
+                if(lista.size()>0){
+                    con = new Conexion();
+                    Platform.runLater(() -> {
+                            lista.forEach((File file) -> {
+                                if(file.isFile()){
+                                    try {
+                                        String nombre = file.getName().substring(0, file.getName().lastIndexOf("."));
+                                        String formato = file.getName().substring(file.getName().lastIndexOf(".") + 1);
+                                        byte[] bytes = Files.readAllBytes(file.toPath());
+                                        Factura cot = new Factura();
+                                        cot.setArchivo(bytes);
+                                        cot.setFormato(formato);
+                                        cot.setNombrearchivo(nombre);                                       
+                                        String sql = "INSERT INTO facturas (idrecepciondepedido,archivo,formato,nombrearchivo) VALUES ("+tabla.getItems().get(row.getIndex()).getIdrecepciondepedido()+" , ?, '"+cot.getFormato()+"' , '"+cot.getNombrearchivo()+"')";
+                                        try {
+                                            PreparedStatement pst = con.getCon().prepareStatement(sql);
+                                            pst.setBytes(1, cot.getArchivo());
+                                            if(pst.executeUpdate()>0){
+                                                listaFacturas.add(cot);
+                                            }
+                                        } catch (SQLException ex) {
+                                            Logger.getLogger(RegistrarRecepcionDePedidoController.class.getName()).log(Level.SEVERE, null, ex);
+                                        }
+                                    } catch (IOException ex) {
+                                        Logger.getLogger(RecepcionDePedidosController.class.getName()).log(Level.SEVERE, null, ex);
+                                    }
+                                }
+                            });
+                        }
+                    );
+//                    con.CERRAR();
+                    e.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+                    e.setDropCompleted(true);
+                    e.consume();
+                }else{
+                    e.consume();
+                }
+            });
+
+            return row ;
+        });

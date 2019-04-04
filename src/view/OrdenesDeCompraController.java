@@ -12,15 +12,19 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Tab;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
 import javafx.util.Callback;
 import model.Conexion;
 import model.OrdenDeCompra;
+import model.RecepcionDePedido;
 
 public class OrdenesDeCompraController implements Initializable {
 
@@ -42,13 +46,17 @@ public class OrdenesDeCompraController implements Initializable {
     OrdenDeCompraDAO ocDAO = new OrdenDeCompraDAO();
     
     Conexion con;
+    @FXML
+    private TableColumn colSolicitados;
+    @FXML
+    private TableColumn colRecibidos;
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
                 
         con = new Conexion();
         try {
-            listaOrdenes.setAll(ocDAO.getOrdenes(con));
+            listaOrdenes.setAll(ocDAO.getOrdenes(con));            
         } catch (Exception ex) {
             util.Metodos.alert("Error", "No se cargaron las ordendes de compra.", null, Alert.AlertType.ERROR, ex, null);
         }finally{
@@ -80,6 +88,33 @@ public class OrdenesDeCompraController implements Initializable {
             util.Metodos.changeSizeOnColumn(tablaOrdenes.getColumns().get(i), tablaOrdenes);
         }
         colOpciones.setMinWidth(110);
+        
+        colSolicitados.setCellValueFactory(new PropertyValueFactory("solicitados"));
+        colSolicitados.setStyle("-fx-alignment: CENTER;");
+        
+        colRecibidos.setCellValueFactory(new PropertyValueFactory("recibidos"));
+        colRecibidos.setStyle("-fx-alignment: CENTER;");
+        colRecibidos.setCellFactory(tc -> new TableCell<OrdenDeCompra, Double>() {
+            @Override
+            protected void updateItem(Double item, boolean empty) {
+                super.updateItem(item, empty);
+                if (item != null) {
+                    OrdenDeCompra occ = getTableView().getItems().get(getIndex());
+                    Double solicitados = occ.getSolicitados();
+                    double recibidos = occ.getRecibidos();                    
+                    setText(String.valueOf(recibidos));
+                    setAlignment(Pos.CENTER);
+                    setTextFill(Color.ANTIQUEWHITE);
+                    if (recibidos < solicitados) {
+                        setStyle("-fx-background-insets: 0 0 1 0 ;-fx-background-color: -fx-background;"
+                                + "-fx-background: #d14836;-fx-font-weight: bold;");
+                    } else {
+                        setStyle("-fx-background-insets: 0 0 1 0 ;-fx-background-color: -fx-background;"
+                                + "-fx-background: #3cba54;-fx-font-weight: bold;");
+                    }
+                }
+            }
+        });
     }
     
 }
