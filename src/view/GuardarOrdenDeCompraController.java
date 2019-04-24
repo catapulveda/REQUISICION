@@ -82,9 +82,9 @@ public class GuardarOrdenDeCompraController implements Initializable {
     
     @FXML
     void guardarOrden(ActionEvent evt){
-        Platform.runLater(() -> {
-           btnGuardar.setDisable(true); 
-        });
+//        Platform.runLater(() -> {
+//           btnGuardar.setDisable(true); 
+//        });
         if(cjfecha.getValue()==null){
             util.Metodos.alert("Mensaje", "Seleccione una fecha", null, Alert.AlertType.WARNING, null, null);
             return;

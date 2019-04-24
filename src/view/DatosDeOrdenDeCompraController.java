@@ -21,21 +21,21 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectWrapper;
-import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -44,13 +44,15 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
@@ -120,6 +122,12 @@ public class DatosDeOrdenDeCompraController implements Initializable {
     TableColumn colCantPend;
     @FXML
     TableColumn<RecepcionDePedido, String> colProducto;
+    @FXML
+    private TableColumn<RecepcionDePedido, Boolean> colSeleccion;
+    @FXML
+    private Button btnAdjuntar;
+    @FXML
+    private CheckBox checkTodos;
 
     private OrdenDeCompra oc;
 
@@ -134,7 +142,9 @@ public class DatosDeOrdenDeCompraController implements Initializable {
     ObservableList<Factura> listaFacturas = FXCollections.observableArrayList();
     private ObservableList<Pedido> listaSeleccionados;
     @FXML
-    private Button btnAdjuntar;
+    private Button btnRecibirPedidos;
+
+    private ObservableList<RecepcionDePedido> listaRecepcionDePedidos = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -146,10 +156,9 @@ public class DatosDeOrdenDeCompraController implements Initializable {
         comboFormaPago.getItems().addAll("CREDITO", "CONTADO", "DEBITO");
 
 //        comboProveedor.setItems(pvDAO.getProveedores());
-
         comboProveedor.setItems(pvDAO.getProveedores());
         comboProveedor.setFilter((item, text) -> item.getNombreprovee().contains(text));
-        gridPane.add(comboProveedor, 1, 2);        
+        gridPane.add(comboProveedor, 1, 2);
 
         tabla.getSelectionModel().setCellSelectionEnabled(true);
         tabla.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
@@ -164,8 +173,49 @@ public class DatosDeOrdenDeCompraController implements Initializable {
         colItem.setCellFactory(tc -> new util.NumberRowCell<>());
         colItem.setMinWidth(35);
 
-        colCantSoli.setCellValueFactory((param)->{
-            return new SimpleStringProperty(param.getValue().getPedido().getCantidadsolicitada()+"");
+        //colSeleccion.setCellValueFactory((CellDataFeatures<RecepcionDePedido, Boolean> p) -> p.getValue().seleccionadoProperty());
+//        colSeleccion.setCellValueFactory(new PropertyValueFactory("seleccionado"));
+//        colSeleccion.setStyle("-fx-alignment: CENTER;");
+//        colSeleccion.getStyleClass().add("check-box-table-cell");
+        colSeleccion.setCellValueFactory(new Callback<CellDataFeatures<RecepcionDePedido, Boolean>, ObservableValue<Boolean>>() {
+
+            @Override
+            public ObservableValue<Boolean> call(CellDataFeatures<RecepcionDePedido, Boolean> param) {
+                RecepcionDePedido p = param.getValue();
+
+                SimpleBooleanProperty booleanProp = new SimpleBooleanProperty(p.isSeleccionado());
+
+                booleanProp.addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                    p.setSeleccionado(newValue);
+                    System.out.println(newValue);
+                    if(p.getPedido().getCantidadsolicitada() > p.getCantidadrecibida() ){
+                        if(!newValue){
+                            listaRecepcionDePedidos.removeIf(rp -> rp.getPedido().getIdpedido() == p.getPedido().getIdpedido() );
+                        }else{
+                            System.out.println("AGREGADO "+p.getPedido().getProducto().getNombreproducto());
+                            listaRecepcionDePedidos.add(p);
+                        }                        
+                    }                    
+                });                
+                return booleanProp;
+            }
+        });
+        listaRecepcionDePedidos.addListener((ListChangeListener.Change<? extends RecepcionDePedido> c) -> {
+            btnRecibirPedidos.setText("Recibir ("+listaRecepcionDePedidos.stream().count()+")");
+            btnRecibirPedidos.setDisable(listaRecepcionDePedidos.size() <= 0);
+        });
+
+        colSeleccion.setCellFactory(new Callback<TableColumn<RecepcionDePedido, Boolean>, TableCell<RecepcionDePedido, Boolean>>() {
+            @Override
+            public TableCell<RecepcionDePedido, Boolean> call(TableColumn<RecepcionDePedido, Boolean> p) {
+                CheckBoxTableCell<RecepcionDePedido, Boolean> cell = new CheckBoxTableCell<>();
+                cell.setAlignment(Pos.CENTER);
+                return cell;
+            }
+        });
+
+        colCantSoli.setCellValueFactory((param) -> {
+            return new SimpleStringProperty(param.getValue().getPedido().getCantidadsolicitada() + "");
         });
         colCantSoli.setStyle("-fx-alignment: CENTER;");
 
@@ -184,10 +234,11 @@ public class DatosDeOrdenDeCompraController implements Initializable {
                     protected void updateItem(Object item, boolean empty) {
                         super.updateItem(item, empty);
                         if (!empty) {
-                            btn.setText(item.toString());                            
+                            btn.setText(item.toString());
                             btn.setMinWidth(70);
                             btn.setOnAction(evt -> {
                                 try {
+                                    seleccionandoTodos(false);
                                     RecepcionDePedido ped = ((RecepcionDePedido) getTableView().getItems().get(getIndex()));
                                     FXMLLoader loader = new FXMLLoader(getClass().getResource(fx.NavegadorDeContenidos.RECEPCION_DE_PEDIDOS));
                                     AnchorPane root = loader.load();
@@ -275,9 +326,9 @@ public class DatosDeOrdenDeCompraController implements Initializable {
 
     @FXML
     void guardarOrden(ActionEvent evt) {
-        Platform.runLater(() -> {
-            btnGuardar.setDisable(true);
-        });
+//        Platform.runLater(() -> {
+//            btnGuardar.setDisable(true);
+//        });
         if (cjfecha.getValue() == null) {
             util.Metodos.alert("Mensaje", "Seleccione una fecha", null, Alert.AlertType.WARNING, null, null);
             return;
@@ -322,7 +373,7 @@ public class DatosDeOrdenDeCompraController implements Initializable {
         con = new Conexion();
         try {
             idorden = ocDAO.guardar(oc, con);
-            
+
             HashMap<String, Object> p = new HashMap<>();
             p.put("IDORDEN", idorden);
             try {
@@ -341,16 +392,16 @@ public class DatosDeOrdenDeCompraController implements Initializable {
             util.Metodos.alert("Mensaje", "Ocurrio un error al intentar guardar la orden de compra", null, Alert.AlertType.ERROR, ex, null);
         } finally {
             con.CERRAR();
-            Platform.runLater(() -> {
-                btnGuardar.setDisable(false);
-            });
+//            Platform.runLater(() -> {
+//                btnGuardar.setDisable(false);
+//            });
         }
-    }   
+    }
 
     @FXML
     void verFacturas() {
         if (listaFacturas.isEmpty()) {
-            adjuntarFactura(buscarArchivo());            
+            adjuntarFactura(buscarArchivo());
         } else {
             JFXListView<Factura> lista = new JFXListView();
             lista.setItems(listaFacturas);
@@ -419,14 +470,14 @@ public class DatosDeOrdenDeCompraController implements Initializable {
                     }
                 }
             });
-            
+
             Button btnNuevo = new Button("Nuevo", new FontAwesomeIconView(FontAwesomeIcon.PLUS));
             btnNuevo.setOnAction((ActionEvent e) -> {
                 adjuntarFactura(buscarArchivo());
             });
             Button btnAbrir = new Button("Abrir", new FontAwesomeIconView(FontAwesomeIcon.EYE));
-            btnAbrir.setOnAction(evt->{
-                if(lista.getSelectionModel().getSelectedItem()!=null){
+            btnAbrir.setOnAction(evt -> {
+                if (lista.getSelectionModel().getSelectedItem() != null) {
                     try {
                         Desktop.getDesktop().open(lista.getSelectionModel().getSelectedItem().getFile().toFile());
                     } catch (IOException ex) {
@@ -450,7 +501,7 @@ public class DatosDeOrdenDeCompraController implements Initializable {
             stage.showAndWait();
         }
     }
-    
+
     private File buscarArchivo() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Buscar Imagen");
@@ -463,7 +514,7 @@ public class DatosDeOrdenDeCompraController implements Initializable {
     }
 
     private void adjuntarFactura(File file) {
-        if(file==null){
+        if (file == null) {
             return;
         }
         try {
@@ -475,12 +526,12 @@ public class DatosDeOrdenDeCompraController implements Initializable {
             fac.setArchivo(bytes);
             fac.setFormato(formato.toLowerCase());
             fac.setNombrearchivo(nombre);
-            
+
             con = new Conexion();
             FacturaDAO facDAO = new FacturaDAO(con);
             fac.setIdfactura(facDAO.guardar(fac));
-            if(fac.getIdfactura()>0){
-                listaFacturas.add(fac);                
+            if (fac.getIdfactura() > 0) {
+                listaFacturas.add(fac);
             }
         } catch (IOException ex) {
             Logger.getLogger(RegistrarRecepcionDePedidoController.class.getName()).log(Level.SEVERE, null, ex);
@@ -583,6 +634,33 @@ public class DatosDeOrdenDeCompraController implements Initializable {
 
     public void setIdorden(int idorden) {
         this.idorden = idorden;
+    }
+
+    @FXML
+    private void seleccionarTodos(ActionEvent event) {        
+        seleccionandoTodos(checkTodos.isSelected());
+    }
+
+    @FXML
+    private void recibirPedido(ActionEvent event) {
+        tabla.getItems().forEach((rp) -> {            
+            listaRecepcionDePedidos.add(rp);
+            System.out.println(rp.isSeleccionado());
+        });
+    }
+    
+    public void seleccionandoTodos(boolean estado){
+        checkTodos.setSelected(estado);
+        listaRecepcionDePedidos.clear();
+        tabla.getItems().forEach((rp) -> {
+            rp.setSeleccionado(estado);
+            if(estado){
+                if(rp.getPedido().getCantidadsolicitada()>rp.getCantidadrecibida()){                    
+                    listaRecepcionDePedidos.add(rp);
+                }                
+            }
+        });
+        tabla.refresh();
     }
 
 }

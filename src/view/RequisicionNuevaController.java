@@ -292,18 +292,15 @@ public class RequisicionNuevaController implements Initializable {
         });
 
         colSelected.setCellValueFactory(new PropertyValueFactory("selected"));
-        colSelected.setCellFactory(CheckBoxTableCell.forTableColumn(new Callback<Integer, ObservableValue<Boolean>>() {
-            @Override
-            public ObservableValue<Boolean> call(Integer param) {
-                Pedido p = tablaPedido.getItems().get(param);                                
-                if(p.getOc().getIdordendecompra()==0 && p.selectedProperty().get()){
-                    listaSeleccionados.add(p);
-                }else{
-                    listaSeleccionados.removeIf(ped-> ped.getProducto().getIdproducto().equals(p.getProducto().getIdproducto()));
-                }
-                btnAsignarOrden.setText("("+listaSeleccionados.stream().count()+") Asignar Orden");
-                return p.selectedProperty();
+        colSelected.setCellFactory(CheckBoxTableCell.forTableColumn((Integer param) -> {
+            Pedido p = tablaPedido.getItems().get(param);
+            if(p.getOc().getIdordendecompra()==0 && p.selectedProperty().get()){
+                listaSeleccionados.add(p);
+            }else{
+                listaSeleccionados.removeIf(ped-> ped.getProducto().getIdproducto().equals(p.getProducto().getIdproducto()));
             }
+            btnAsignarOrden.setText("("+listaSeleccionados.stream().count()+") Asignar Orden");
+            return p.selectedProperty();
         }));
         listaSeleccionados.addListener((ListChangeListener.Change<? extends Pedido> c) -> {
             btnAsignarOrden.setDisable(listaSeleccionados.size() <= 0);

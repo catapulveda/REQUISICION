@@ -1,9 +1,11 @@
 package model;
 
 import java.time.LocalDate;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -24,7 +26,20 @@ public class RecepcionDePedido {
     private ObjectProperty<LocalDate> fechaderegistro;
     private byte[] archivo;
     private StringProperty formato;
-    private StringProperty nombrearchivo;
+    private StringProperty nombrearchivo;        
+    private final BooleanProperty seleccionado = new SimpleBooleanProperty(false);
+
+    public boolean isSeleccionado() {
+        return seleccionado.get();
+    }
+
+    public void setSeleccionado(boolean value) {
+        seleccionado.set(value);
+    }
+
+    public BooleanProperty seleccionadoProperty() {
+        return seleccionado;
+    }
 
     public RecepcionDePedido() {
     }        

@@ -38,7 +38,7 @@
 		<parameter name="IDORDEN_TABLA" class="java.lang.Integer" isForPrompting="false"/>
 		<parameter name="IVA" class="java.lang.Integer" isForPrompting="false"/>
 		<queryString>
-			<![CDATA[SELECT p.nombreproducto, p.medida, ped.cantidadsolicitada, ped.precioinicial, ped.observaciones, 
+			<![CDATA[SELECT p.nombreproducto, p.medida, ped.cantidadsolicitada, ped.precioinicial, ped.observaciones,
 (ped.cantidadsolicitada*ped.precioinicial) as total
 FROM pedidos ped
 INNER JOIN producto p ON p.idproducto=ped.idproducto
@@ -58,8 +58,8 @@ WHERE idordendecompra=$P{IDORDEN_TABLA} ORDER BY p.nombreproducto;]]>
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<queryString>
-		<![CDATA[SELECT pv.*, req.numerorequisicion, 
-ur.nombreusuario as ur, uc.nombreusuario as uc, oc.* 
+		<![CDATA[SELECT pv.*, req.numerorequisicion,
+ur.nombreusuario as ur, uc.nombreusuario as uc, oc.*
 FROM ordendecompra oc
 INNER JOIN proveedor pv ON pv.idproveedor=oc.idproveedor
 INNER JOIN pedidos ped ON ped.idordendecompra=oc.idordendecompra
