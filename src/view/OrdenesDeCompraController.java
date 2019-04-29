@@ -70,7 +70,7 @@ public class OrdenesDeCompraController implements Initializable {
                 return new ReadOnlyObjectWrapper(p.getValue().getIdordendecompra());
             }
         });
-        colItem.setCellFactory(tc -> new util.NumberRowCell<>()); 
+        colItem.setCellFactory(tc -> new FormatCell.NumberRowCell<>()); 
         
         colNumeroOrden.setCellValueFactory(new PropertyValueFactory("numerodeorden"));
         colNumeroOrden.setStyle("-fx-alignment: CENTER;");
@@ -82,7 +82,7 @@ public class OrdenesDeCompraController implements Initializable {
         });
         colCentroDeCostos.setStyle("-fx-alignment: CENTER;");
         
-        colOpciones.setCellFactory(tc -> new util.ButtonCellOrdenes<>(this)); 
+        colOpciones.setCellFactory(tc -> new FormatCell.ButtonCellOrdenes<>(this)); 
         
         for (int i = 1; i < tablaOrdenes.getColumns().size(); i++) {
             util.Metodos.changeSizeOnColumn(tablaOrdenes.getColumns().get(i), tablaOrdenes);

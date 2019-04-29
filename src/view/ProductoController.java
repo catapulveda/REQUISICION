@@ -129,7 +129,7 @@ public class ProductoController implements Initializable{
                 return new ReadOnlyObjectWrapper(0);
             }
         });
-        colNumproducto.setCellFactory(tc -> new util.NumberRowCell<>());         
+        colNumproducto.setCellFactory(tc -> new FormatCell.NumberRowCell<>());         
         
         colAcciones.setCellValueFactory(new PropertyValueFactory<>("Acciones"));
         colAcciones.setCellFactory(new Callback<TableColumn<Producto, String>, TableCell<Producto, String>>(){

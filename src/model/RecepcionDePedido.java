@@ -19,6 +19,7 @@ public class RecepcionDePedido {
     private ObjectProperty<LocalDate> fechaderecibido;
     private DoubleProperty cantidadrecibida;
     private DoubleProperty preciofinal;
+    private DoubleProperty pendiente;
     private StringProperty factura;
     private StringProperty remision;
     private StringProperty observaciones;
@@ -27,8 +28,20 @@ public class RecepcionDePedido {
     private byte[] archivo;
     private StringProperty formato;
     private StringProperty nombrearchivo;        
-    private final BooleanProperty seleccionado = new SimpleBooleanProperty(false);
+    private final BooleanProperty seleccionado = new SimpleBooleanProperty(false);    
 
+    public final double getPendiente() {        
+        return pendiente.get();
+    }
+    
+    public final void setPendiente(double value) {
+        pendiente = new SimpleDoubleProperty(value);
+    }
+    
+    public DoubleProperty cantidadpendienteProperty() {
+        return pendiente;
+    }
+    
     public boolean isSeleccionado() {
         return seleccionado.get();
     }
@@ -179,5 +192,5 @@ public class RecepcionDePedido {
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }        
-    
+   
 }

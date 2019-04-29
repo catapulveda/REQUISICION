@@ -1,7 +1,5 @@
-package util;
+package FormatCell;
 
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.logging.Level;
@@ -21,14 +19,16 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import model.OrdenDeCompra;
 import net.sf.jasperreports.engine.JRException;
+import org.kordamp.ikonli.fontawesome.FontAwesome;
+import org.kordamp.ikonli.javafx.FontIcon;
 import view.DatosDeOrdenDeCompraController;
 import view.OrdenesDeCompraController;
 import view.RequisicionController;
 
 public class ButtonCellOrdenes<T> extends TableCell<T, String> {
     
-    final Button btnImprimr = new Button("", new FontAwesomeIconView(FontAwesomeIcon.PRINT));
-    final Button btnAbrir = new Button("", new FontAwesomeIconView(FontAwesomeIcon.LIST_OL));    
+    final Button btnImprimr = new Button("", new FontIcon(FontAwesome.PRINT));
+    final Button btnAbrir = new Button("", new FontIcon(FontAwesome.LIST_OL));    
     HBox hBox = new HBox(5.0, btnImprimr, btnAbrir);
     
     private OrdenesDeCompraController occ;

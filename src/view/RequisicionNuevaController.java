@@ -5,9 +5,6 @@ import DAO.OrdenDeCompraDAO;
 import DAO.PedidoDAO;
 import com.jfoenix.controls.JFXListView;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
-import de.jensd.fx.glyphs.fontawesome.utils.FontAwesomeIconFactory;
 import fx.NavegadorDeContenidos;
 import java.awt.Desktop;
 import java.io.File;
@@ -92,61 +89,87 @@ import model.Pedido;
 import model.Producto;
 import model.Requisicion;
 import net.sf.jasperreports.engine.JRException;
-import util.BooleanCell;
+import org.kordamp.ikonli.fontawesome.FontAwesome;
+import org.kordamp.ikonli.javafx.FontIcon;
+import FormatCell.BooleanCell;
 
 public class RequisicionNuevaController implements Initializable {
 
-    @FXML AnchorPane anchorPane;
+    @FXML
+    AnchorPane anchorPane;
 
-    @FXML TextField cjreferencia;
-    @FXML TextField cjbuscar;
-    
+    @FXML
+    TextField cjreferencia;
+    @FXML
+    TextField cjbuscar;
+
     FilteredList<Pedido> filtro;
 
-    @FXML TableView<Pedido> tablaPedido;
+    @FXML
+    TableView<Pedido> tablaPedido;
 
-    @FXML TableColumn colItem;
-    @FXML TableColumn colProducto;
-    @FXML TableColumn<Pedido, String> colUnidad;
-    @FXML TableColumn colCantidad;
-    @FXML TableColumn colValor;
-    @FXML TableColumn colObservaciones;
+    @FXML
+    TableColumn colItem;
+    @FXML
+    TableColumn colProducto;
+    @FXML
+    TableColumn<Pedido, String> colUnidad;
+    @FXML
+    TableColumn colCantidad;
+    @FXML
+    TableColumn colValor;
+    @FXML
+    TableColumn colObservaciones;
 
-    @FXML TableColumn<Pedido, OrdenDeCompra> colOc;
-    @FXML TableColumn colSelected;
+    @FXML
+    TableColumn<Pedido, OrdenDeCompra> colOc;
+    @FXML
+    TableColumn colSelected;
 
-    @FXML Button btnAgregarProducto;
-    @FXML Button btnGuardar;
-    @FXML Button btnAnadirNota;
-    @FXML Button btnEliminarProducto;
-    
-    @FXML CheckBox checkTodos;
+    @FXML
+    Button btnAgregarProducto;
+    @FXML
+    Button btnGuardar;
+    @FXML
+    Button btnAnadirNota;
+    @FXML
+    Button btnEliminarProducto;
 
-    @FXML ContextMenu menuTabla = new ContextMenu();
-    @FXML MenuItem menuItemNota = new MenuItem("Añadir nota", FontAwesomeIconFactory.get().createIcon(FontAwesomeIcon.PLUS, "12"));
-    @FXML MenuItem menuItemQuitar = new MenuItem("Eliminar", FontAwesomeIconFactory.get().createIcon(FontAwesomeIcon.RECYCLE, "12"));
+    @FXML
+    CheckBox checkTodos;
+
+    @FXML
+    ContextMenu menuTabla = new ContextMenu();
+    @FXML
+    MenuItem menuItemNota = new MenuItem("Añadir nota", new FontIcon(FontAwesome.PLUS));
+    @FXML
+    MenuItem menuItemQuitar = new MenuItem("Eliminar", new FontIcon(FontAwesome.RECYCLE));
 
     //ObservableList<Pedido> listaPedido = FXCollections.observableArrayList(); 
     ObservableList<Pedido> listaPedidos = FXCollections.observableArrayList();
 
     ObservableList<Pedido> listaSeleccionados = FXCollections.observableArrayList();
 
-    @FXML ComboBox<OrdenDeCompra> comboOrdenes;
+    @FXML
+    ComboBox<OrdenDeCompra> comboOrdenes;
     ObservableList<OrdenDeCompra> listaOrdenes = FXCollections.observableArrayList();
 
-    @FXML Button btnAsignarOrden;
-    @FXML Button btnActualizarOrdenes;
-    @FXML Button btnAdjuntar;
-    
+    @FXML
+    Button btnAsignarOrden;
+    @FXML
+    Button btnActualizarOrdenes;
+    @FXML
+    Button btnAdjuntar;
+
     Tooltip toolTip = new Tooltip();
 
     private RequisicionController rc;
     private Requisicion requisicion = null;
 
     Conexion con;
-    
+
     int indexRow = -1;
-    
+
     ObservableList<model.Cotizacion> listaCotizaciones = FXCollections.observableArrayList();
 
     @Override
@@ -178,11 +201,11 @@ public class RequisicionNuevaController implements Initializable {
             final TableHeaderRow header = (TableHeaderRow) tablaPedido.lookup("TableHeaderRow");
             header.reorderingProperty().addListener((o, oldVal, newVal) -> header.setReordering(false));
         });
-        
+
         tablaPedido.setRowFactory(tv -> {
             TableRow<Pedido> row = new TableRow<>();
             row.contextMenuProperty().bind(Bindings.when(row.emptyProperty()).then((ContextMenu) null).otherwise(menuTabla));
-            
+
 //            row.setOnMouseMoved(evt->{
 //                if(row.getIndex()!=indexRow){
 //                    indexRow = row.getIndex();
@@ -200,8 +223,7 @@ public class RequisicionNuevaController implements Initializable {
         });
 
         tablaPedido.setOnKeyPressed(event -> {
-            if (/*event.getCode().isLetterKey() ||*/ 
-                    event.getCode().isDigitKey() || event.getCode() == KeyCode.BACK_SPACE) {
+            if (/*event.getCode().isLetterKey() ||*/event.getCode().isDigitKey() || event.getCode() == KeyCode.BACK_SPACE) {
                 final TablePosition<Pedido, ?> focusedCell = tablaPedido.focusModelProperty().get().focusedCellProperty().get();
                 tablaPedido.edit(focusedCell.getRow(), focusedCell.getTableColumn());
             } else if (event.getCode() == KeyCode.RIGHT || event.getCode() == KeyCode.TAB || event.getCode() == KeyCode.ENTER) {
@@ -257,7 +279,7 @@ public class RequisicionNuevaController implements Initializable {
 
         colCantidad.setEditable(true);
         colCantidad.setCellValueFactory(new PropertyValueFactory("cantidadsolicitada"));
-        colCantidad.setCellFactory(tc -> new util.IntegerCell<>());
+        colCantidad.setCellFactory(tc -> new FormatCell.DoubleCell<>());
         colCantidad.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Pedido, Double>>() {
             @Override
             public void handle(TableColumn.CellEditEvent<Pedido, Double> event) {
@@ -267,13 +289,13 @@ public class RequisicionNuevaController implements Initializable {
                 }
             }
         });
-        
+
         colObservaciones.setCellValueFactory(new PropertyValueFactory("observaciones"));
 
         colValor.setEditable(true);
         colValor.setCellValueFactory(new PropertyValueFactory("precioinicial"));
         //colValor.setCellFactory(tc -> new util.CurrencyCell<>());
-        colValor.setCellFactory(tc -> new util.FormatoMoneda<>());
+        colValor.setCellFactory(tc -> new FormatCell.FormatoMoneda<>());
         colValor.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Pedido, Double>>() {
             @Override
             public void handle(TableColumn.CellEditEvent<Pedido, Double> event) {
@@ -286,20 +308,20 @@ public class RequisicionNuevaController implements Initializable {
         });
 
         colOc.setCellValueFactory(new PropertyValueFactory("oc"));
-        
-        colUnidad.setCellValueFactory((param)->{
+
+        colUnidad.setCellValueFactory((param) -> {
             return new SimpleStringProperty(param.getValue().getProducto().getMedida());
         });
 
         colSelected.setCellValueFactory(new PropertyValueFactory("selected"));
         colSelected.setCellFactory(CheckBoxTableCell.forTableColumn((Integer param) -> {
             Pedido p = tablaPedido.getItems().get(param);
-            if(p.getOc().getIdordendecompra()==0 && p.selectedProperty().get()){
+            if (p.getOc().getIdordendecompra() == 0 && p.selectedProperty().get()) {
                 listaSeleccionados.add(p);
-            }else{
-                listaSeleccionados.removeIf(ped-> ped.getProducto().getIdproducto().equals(p.getProducto().getIdproducto()));
+            } else {
+                listaSeleccionados.removeIf(ped -> ped.getProducto().getIdproducto().equals(p.getProducto().getIdproducto()));
             }
-            btnAsignarOrden.setText("("+listaSeleccionados.stream().count()+") Asignar Orden");
+            btnAsignarOrden.setText("(" + listaSeleccionados.stream().count() + ") Asignar Orden");
             return p.selectedProperty();
         }));
         listaSeleccionados.addListener((ListChangeListener.Change<? extends Pedido> c) -> {
@@ -312,24 +334,26 @@ public class RequisicionNuevaController implements Initializable {
                 cjreferencia.getTooltip().hide();
             }
         });
-        
-        btnAdjuntar.setTooltip(new Tooltip("Adjuntar cotizaciones"));                       
-        
+
+        btnAdjuntar.setTooltip(new Tooltip("Adjuntar cotizaciones"));
+
         listaPedidos.addListener((ListChangeListener.Change<? extends Pedido> c) -> {
             btnGuardar.setDisable(listaPedidos.size() <= 0);
         });
-        
+
         menuItemNota.setOnAction(actionAnadirNota);
         menuItemQuitar.setOnAction(actionQuitarProducto);
         btnAnadirNota.setOnAction(actionAnadirNota);
-        btnEliminarProducto.setOnAction(actionQuitarProducto);        
+        btnEliminarProducto.setOnAction(actionQuitarProducto);
         btnAnadirNota.setTooltip(new Tooltip("Añadir nota"));
         btnEliminarProducto.setTooltip(new Tooltip("Eliminar producto"));
     }
-    
+
     EventHandler actionAnadirNota = (EventHandler<ActionEvent>) (ActionEvent event) -> {
         Pedido ped = tablaPedido.getSelectionModel().getSelectedItem();
-        if(ped==null){return;}
+        if (ped == null) {
+            return;
+        }
         Dialog dialog = new Dialog<>();
         dialog.setTitle("Añadir Observaciones");
         dialog.setHeaderText("" + tablaPedido.getSelectionModel().getSelectedItem().getProducto());
@@ -358,15 +382,17 @@ public class RequisicionNuevaController implements Initializable {
             tablaPedido.refresh();
             if (ped.getIdpedido() > 0) {
                 actualizarCampo("observaciones", observaciones.getText(), ped.getIdpedido());
-                tablaPedido.getItems().get(tablaPedido.getSelectionModel().getSelectedIndex()).setObservaciones(observaciones.getText());                
+                tablaPedido.getItems().get(tablaPedido.getSelectionModel().getSelectedIndex()).setObservaciones(observaciones.getText());
             }
         }
     };
-    
-    EventHandler actionQuitarProducto = (EventHandler<ActionEvent>) (ActionEvent event) -> {        
+
+    EventHandler actionQuitarProducto = (EventHandler<ActionEvent>) (ActionEvent event) -> {
         Pedido ped = tablaPedido.getSelectionModel().getSelectedItem();
-        if(ped==null){return;}
-        if(ped.getIdpedido()>0){
+        if (ped == null) {
+            return;
+        }
+        if (ped.getIdpedido() > 0) {
             con = new Conexion();
             try {
                 Alert alert = new Alert(AlertType.CONFIRMATION);
@@ -375,65 +401,71 @@ public class RequisicionNuevaController implements Initializable {
 
                 Optional<ButtonType> result = alert.showAndWait();
                 if (result.get() == ButtonType.OK) {
-                    if(con.GUARDAR("DELETE FROM pedidos WHERE idpedido="+ped.getIdpedido())>0){}
+                    if (con.GUARDAR("DELETE FROM pedidos WHERE idpedido=" + ped.getIdpedido()) > 0) {
+                    }
                     listaPedidos.removeIf(t -> Objects.equals(t.getProducto().getIdproducto(), ped.getProducto().getIdproducto()));
                     tablaPedido.getItems().remove(tablaPedido.getSelectionModel().getSelectedItem());
-                }                    
-            }catch(Exception ex){Logger.getLogger(RequisicionNuevaController.class.getName()).log(Level.SEVERE, null, ex);}
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(RequisicionNuevaController.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     };
-    
+
     @FXML
-    void OnDragOver( DragEvent event){
-        if(event.getDragboard().hasFiles()){
-            event.acceptTransferModes(TransferMode.MOVE);                
+    void OnDragOver(DragEvent event) {
+        if (event.getDragboard().hasFiles()) {
+            event.acceptTransferModes(TransferMode.MOVE);
         }
         event.consume();
     }
-    
+
     @FXML
-    void OnDragDropped( DragEvent e){
-        final Dragboard db = e.getDragboard(); 
-        List<File> lista = e.getDragboard().getFiles();        
-        if(lista.size()>0){
-            if(getRequisicion().getIdrequisicion()>0){
+    void OnDragDropped(DragEvent e) {
+        final Dragboard db = e.getDragboard();
+        List<File> lista = e.getDragboard().getFiles();
+        if (lista.size() > 0) {
+            if (getRequisicion().getIdrequisicion() > 0) {
                 Platform.runLater(() -> {
-                        int count = 0;
-                        for(File file : lista){
-                            try {
-                                if(file.isFile()){
-                                    String nombre = file.getName().substring(0, file.getName().lastIndexOf("."));
-                                    String formato = file.getName().substring(file.getName().lastIndexOf(".") + 1);
-                                    byte[] bytes = Files.readAllBytes(file.toPath());
-                                    con = new Conexion();                        
-                                    PreparedStatement pst = con.getCon().prepareStatement("INSERT INTO cotizaciones (idrequisicion,archivo, formato, nombrearchivo, fechaderegistro) VALUES ("+getRequisicion().getIdrequisicion()+", ?, '"+formato+"' , '"+nombre+"', '"+LocalDateTime.now()+"')");
-                                    pst.setBytes(1, bytes);
-                                    if (pst.executeUpdate() > 0) {
-                                        count += 1;
-                                        con.CERRAR();
-                                    }
-                                }                                
-                            } catch (IOException | SQLException ex) {
-                                Logger.getLogger(RequisicionNuevaController.class.getName()).log(Level.SEVERE, null, ex);
-                            }finally{}
+                    int count = 0;
+                    for (File file : lista) {
+                        try {
+                            if (file.isFile()) {
+                                String nombre = file.getName().substring(0, file.getName().lastIndexOf("."));
+                                String formato = file.getName().substring(file.getName().lastIndexOf(".") + 1);
+                                byte[] bytes = Files.readAllBytes(file.toPath());
+                                con = new Conexion();
+                                PreparedStatement pst = con.getCon().prepareStatement("INSERT INTO cotizaciones (idrequisicion,archivo, formato, nombrearchivo, fechaderegistro) VALUES (" + getRequisicion().getIdrequisicion() + ", ?, '" + formato + "' , '" + nombre + "', '" + LocalDateTime.now() + "')");
+                                pst.setBytes(1, bytes);
+                                if (pst.executeUpdate() > 0) {
+                                    count += 1;
+                                    con.CERRAR();
+                                }
+                            }
+                        } catch (IOException | SQLException ex) {
+                            Logger.getLogger(RequisicionNuevaController.class.getName()).log(Level.SEVERE, null, ex);
+                        } finally {
                         }
-                        cargarCotizaciones();
                     }
+                    cargarCotizaciones();
+                }
                 );
-            }else{
+            } else {
                 util.Metodos.alert("Mensaje", "Primero debe guardar la requisicion para adjuntar cotizaciones", null, AlertType.WARNING, null, null);
             }
             e.acceptTransferModes(TransferMode.COPY_OR_MOVE);
             e.setDropCompleted(true);
             e.consume();
-        }else{
+        } else {
             e.consume();
         }
-    };
+    }
+
+    ;
 
     @FXML
     void agregarProducto(ActionEvent evt) {
-        if(getRequisicion()!=null && LocalDate.now().isAfter(getRequisicion().getFechaderegistro().toLocalDate())){
+        if (getRequisicion() != null && LocalDate.now().isAfter(getRequisicion().getFechaderegistro().toLocalDate())) {
             util.Metodos.alert("Advertencia", "No puede registrar productos a una requisicion con una fecha diferente a la fecha actual.", null, Alert.AlertType.WARNING, null, null);
             return;
         }
@@ -511,12 +543,12 @@ public class RequisicionNuevaController implements Initializable {
                 pst = con.getCon().prepareStatement(sql);
                 if (pst.executeUpdate() > 0) {
                     if (registrado) {
-                        con.getCon().commit();                        
+                        con.getCon().commit();
                     }
                     listaPedidos.clear();
                     rc.btnListar.fire();
                     rc.tabPane.getSelectionModel().selectFirst();
-                    rc.tabPane.getTabs().remove(1);                    
+                    rc.tabPane.getTabs().remove(1);
                 }
             }
         } catch (SQLException ex) {
@@ -600,10 +632,10 @@ public class RequisicionNuevaController implements Initializable {
     void actualizarOrdenes() {
         setIdrequisicion(getRequisicion());
     }
-    
+
     @FXML
-    void verCotizaciones(){
-        if(listaCotizaciones.isEmpty()){
+    void verCotizaciones() {
+        if (listaCotizaciones.isEmpty()) {
             util.Metodos.alert("Mensaje", "No hay cotizaciones adjuntas", null, AlertType.INFORMATION, null, null);
             return;
         }
@@ -613,71 +645,77 @@ public class RequisicionNuevaController implements Initializable {
 //            lista.getItems().add(e);
 //        });
         lista.setCellFactory((ListView<Cotizacion> list) -> {
-            ListCell<Cotizacion> listCell = new ListCell<Cotizacion>(){
+            ListCell<Cotizacion> listCell = new ListCell<Cotizacion>() {
                 @Override
                 protected void updateItem(Cotizacion item, boolean empty) {
                     super.updateItem(item, empty);
-                    if(empty){
+                    if (empty) {
                         setGraphic(null);
                         setText(null);
                     } else {
-                        switch(item.getFormato()){
-                            case "pdf":setGraphic(new FontAwesomeIconView(FontAwesomeIcon.FILE_PDF_ALT));
+                        switch (item.getFormato()) {
+                            case "pdf":
+                                setGraphic(new FontIcon(FontAwesome.FILE_PDF_O));
                                 break;
-                            case "xls":setGraphic(new FontAwesomeIconView(FontAwesomeIcon.FILE_EXCEL_ALT));
+                            case "xls":
+                                setGraphic(new FontIcon(FontAwesome.FILE_EXCEL_O));
                                 break;
-                            case "xlsx":setGraphic(new FontAwesomeIconView(FontAwesomeIcon.FILE_EXCEL_ALT));
+                            case "xlsx":
+                                setGraphic(new FontIcon(FontAwesome.FILE_EXCEL_O));
                                 break;
-                            case "png":setGraphic(new FontAwesomeIconView(FontAwesomeIcon.FILE_IMAGE_ALT));
+                            case "png":
+                                setGraphic(new FontIcon(FontAwesome.FILE_IMAGE_O));
                                 break;
-                            case "jpg":setGraphic(new FontAwesomeIconView(FontAwesomeIcon.FILE_IMAGE_ALT));
-                                break; 
-                            default: setGraphic(new FontAwesomeIconView(FontAwesomeIcon.QUESTION_CIRCLE_ALT));
-                        }                                                                           
+                            case "jpg":
+                                setGraphic(new FontIcon(FontAwesome.FILE_IMAGE_O));
+                                break;
+                            default:
+                                setGraphic(new FontIcon(FontAwesome.QUESTION_CIRCLE_O));
+                        }
                         setText(item.toString());
                     }
                 }
             };
-            return listCell;            
+            return listCell;
         });
-        lista.setOnMouseClicked(evt->{
-            if(evt.getClickCount()==2&&evt.getButton()==MouseButton.PRIMARY){
+        lista.setOnMouseClicked(evt -> {
+            if (evt.getClickCount() == 2 && evt.getButton() == MouseButton.PRIMARY) {
                 Cotizacion c = lista.getSelectionModel().getSelectedItem();
-                try {                
+                try {
                     Desktop.getDesktop().open(c.getFile().toFile());
                 } catch (IOException ex) {
                     Logger.getLogger(RequisicionNuevaController.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });
-        lista.setOnKeyPressed(evt->{
-            if(evt.getCode()==KeyCode.DELETE){
-                Cotizacion c = lista.getSelectionModel().getSelectedItem();                
+        lista.setOnKeyPressed(evt -> {
+            if (evt.getCode() == KeyCode.DELETE) {
+                Cotizacion c = lista.getSelectionModel().getSelectedItem();
                 Alert alert = new Alert(AlertType.CONFIRMATION);
                 alert.setTitle("Confirmacion");
-                alert.setHeaderText("¿Continuar con el registro?");               
-                Optional<ButtonType> result = alert.showAndWait();                
+                alert.setHeaderText("¿Continuar con el registro?");
+                Optional<ButtonType> result = alert.showAndWait();
                 if (result.get() == ButtonType.OK) {
                     con = new Conexion();
                     CotizacionDAO cDAO = new CotizacionDAO();
                     try {
-                        if(cDAO.delete(c, con)>0){
+                        if (cDAO.delete(c, con) > 0) {
                             lista.getItems().remove(lista.getSelectionModel().getSelectedIndex());
-                            btnAdjuntar.setText(" ("+listaCotizaciones.size()+")");
+                            btnAdjuntar.setText(" (" + listaCotizaciones.size() + ")");
                         }
                     } catch (SQLException ex) {
                         util.Metodos.alert("Mensaje", "No se pudo eliminar la cotizacion", null, AlertType.ERROR, ex, null);
                     }
-                }                
+                }
             }
-        });        
-        
+        });
+
         AnchorPane.setTopAnchor(lista, 0.0);
         AnchorPane.setLeftAnchor(lista, 0.0);
         AnchorPane.setRightAnchor(lista, 0.0);
         AnchorPane.setBottomAnchor(lista, 0.0);
-        
-        AnchorPane ap = new AnchorPane(lista);        
+
+        AnchorPane ap = new AnchorPane(lista);
         Scene scene = new Scene(ap, 320, 240);
         Stage stage = new Stage();
         stage.setScene(scene);
@@ -725,15 +763,15 @@ public class RequisicionNuevaController implements Initializable {
         this.requisicion = req;
         try {
             con = new Conexion();
-            
+
             PedidoDAO pDAO = new PedidoDAO();
             tablaPedido.getItems().setAll(pDAO.getPedidos(getRequisicion().getIdrequisicion(), con));
             filtro = new FilteredList(tablaPedido.getItems(), p -> true);
             organizarColumnas();
-            
+
             cargarCotizaciones();
-        
-            OrdenDeCompraDAO ocDAO = new OrdenDeCompraDAO();            
+
+            OrdenDeCompraDAO ocDAO = new OrdenDeCompraDAO();
             listaOrdenes.removeAll(listaOrdenes);
             listaOrdenes.setAll(ocDAO.getOrdenes(con));
         } catch (SQLException ex) {
@@ -743,36 +781,35 @@ public class RequisicionNuevaController implements Initializable {
             con.CERRAR();
         }
     }
-    
-    void cargarCotizaciones(){
-        try {            
+
+    void cargarCotizaciones() {
+        try {
             listaCotizaciones.clear();
             CotizacionDAO cotDAO = new CotizacionDAO();
             Conexion conex = new Conexion();
             listaCotizaciones.setAll(cotDAO.getCotizaciones(getRequisicion().getIdrequisicion(), conex));
-            btnAdjuntar.setText(" ("+listaCotizaciones.size()+")");
+            btnAdjuntar.setText(" (" + listaCotizaciones.size() + ")");
             conex.CERRAR();
         } catch (SQLException ex) {
             util.Metodos.alert("ERROR", null, "NO SE PUDO CARGAR LAS COTIZACIONES", Alert.AlertType.ERROR, ex, null);
         }
     }
-    
+
     @FXML
-    void seleccionarTodos(ActionEvent evt){
-        tablaPedido.getItems().forEach(a->{
-            if(a.getOc().getNumerodeorden()==0){
+    void seleccionarTodos(ActionEvent evt) {
+        tablaPedido.getItems().forEach(a -> {
+            if (a.getOc().getNumerodeorden() == 0) {
                 a.setSelected(true);
             }
         });
         tablaPedido.refresh();
     }
 
-    
     @FXML
-    void buscarProducto(KeyEvent evt){
-        cjbuscar.textProperty().addListener((observableValue, oldValue, newValue)->{
-            filtro.setPredicate( (Predicate<? super Pedido>) ped->{
-                if(newValue==null || newValue.isEmpty()){
+    void buscarProducto(KeyEvent evt) {
+        cjbuscar.textProperty().addListener((observableValue, oldValue, newValue) -> {
+            filtro.setPredicate((Predicate<? super Pedido>) ped -> {
+                if (newValue == null || newValue.isEmpty()) {
                     return true;
                 }
                 return ped.getProducto().getNombreproducto().toLowerCase().contains(newValue.toLowerCase());

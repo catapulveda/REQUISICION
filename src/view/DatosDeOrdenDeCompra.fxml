@@ -6,7 +6,6 @@
 <?import com.jfoenix.controls.JFXDatePicker?>
 <?import com.jfoenix.controls.JFXTextArea?>
 <?import com.jfoenix.controls.JFXTextField?>
-<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <?import java.lang.String?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
@@ -16,14 +15,13 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.ToolBar?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
 
 <AnchorPane id="AnchorPane" fx:id="root" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.DatosDeOrdenDeCompraController">
    <children>
@@ -139,26 +137,22 @@
                           <items>
                             <Button fx:id="btnDevolver" mnemonicParsing="false" onAction="#devolverProducto" text="Retirar de orden">
                                  <graphic>
-                                    <FontAwesomeIconView glyphName="REPLY_ALL" size="16" />
+                                    <FontIcon iconLiteral="fa-mail-reply-all" iconSize="18" />
                                  </graphic></Button>
                               <Button fx:id="btnAdjuntar" layoutX="10.0" layoutY="13.0" mnemonicParsing="false" onAction="#verFacturas" text="Ver Facturas">
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font>
                                  <graphic>
-                                    <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
-                                       <image>
-                                          <Image url="@../images/adjuntar.png" />
-                                       </image>
-                                    </ImageView>
+                                    <FontIcon iconLiteral="fa-paperclip" iconSize="18" />
                                  </graphic>
-                                 <font>
-                                    <Font name="System Bold" size="12.0" />
-                                 </font>
                               </Button>
-                              <Button fx:id="btnRecibirPedidos" layoutX="137.0" layoutY="13.0" mnemonicParsing="false" onAction="#recibirPedido" text="Recibir">
+                              <Button fx:id="btnRecibirPedidos" disable="true" layoutX="137.0" layoutY="13.0" mnemonicParsing="false" onAction="#recibirPedido" text="Recibir">
                                  <font>
                                     <Font name="System Bold" size="12.0" />
                                  </font>
                                  <graphic>
-                                    <FontAwesomeIconView glyphName="CHECK" size="16" />
+                                    <FontIcon iconLiteral="fa-check" iconSize="18" />
                                  </graphic>
                               </Button>
                           </items>

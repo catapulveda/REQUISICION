@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
-<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <?import java.lang.String?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
@@ -11,12 +10,11 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
 
 <AnchorPane fx:id="anchorPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.RequisicionNuevaController">
    <children>
@@ -26,25 +24,21 @@
                <children>
                   <Button fx:id="btnGuardar" disable="true" mnemonicParsing="false" onAction="#guardarRequisicion" text="Guardar">
                      <graphic>
-                        <FontAwesomeIconView glyphName="SAVE" size="16" />
+                        <FontIcon iconLiteral="fa-save" iconSize="18" />
                      </graphic></Button>
                   <Button fx:id="btnAdjuntar" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#verCotizaciones">
                      <graphic>
-                        <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../images/adjuntar.png" />
-                           </image>
-                        </ImageView>
+                        <FontIcon iconLiteral="fa-paperclip" iconSize="18" />
                      </graphic>
                   </Button>
                   <Button fx:id="btnAnadirNota" mnemonicParsing="false" textAlignment="CENTER">
                      <graphic>
-                        <FontAwesomeIconView glyphName="STICKY_NOTE_ALT" size="16.0" />
+                        <FontIcon iconLiteral="fa-sticky-note-o" iconSize="18" />
                      </graphic>
                   </Button>
                   <Button fx:id="btnEliminarProducto" mnemonicParsing="false">
                      <graphic>
-                        <FontAwesomeIconView glyphName="TRASH" size="16.0" />
+                        <FontIcon iconLiteral="fa-trash" iconSize="18" />
                      </graphic>
                   </Button>
                   <Label prefHeight="17.0" text="Referecia:" />
@@ -63,7 +57,7 @@
                      <graphic>
                         <Button fx:id="btnAgregarProducto" mnemonicParsing="false" onAction="#agregarProducto">
                            <graphic>
-                              <FontAwesomeIconView glyphName="PLUS" size="16" />
+                              <FontIcon iconLiteral="fa-plus" iconSize="18" />
                            </graphic>
                         </Button>
                      </graphic>
@@ -86,7 +80,7 @@
                   <ComboBox fx:id="comboOrdenes" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
                   <JFXButton fx:id="btnActualizarOrdenes" buttonType="RAISED" onAction="#actualizarOrdenes">
                      <graphic>
-                        <FontAwesomeIconView glyphName="REFRESH" size="16" />
+                        <FontIcon iconLiteral="fa-refresh" iconSize="18" />
                      </graphic>
                   </JFXButton>
                   <JFXButton fx:id="btnAsignarOrden" buttonType="RAISED" disable="true" onAction="#asignarOrden" text="Asignar Orden">

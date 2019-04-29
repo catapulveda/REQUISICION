@@ -235,7 +235,7 @@ public class ProveedorController implements Initializable {
     
     @FXML
     public void guardar(ActionEvent evt){        
-        if(cjnombre.getText().isEmpty()){
+        if(cjnombre.getText()== null || cjnombre.getText().trim().isEmpty()){
             util.Metodos.alert("Complete los campos obligatorios", "Ingrese el nombre del proveedor", null, AlertType.WARNING, null, null);
             return;
         }

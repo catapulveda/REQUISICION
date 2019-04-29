@@ -1,4 +1,4 @@
-package view;
+package FormatCell;
 
 import java.util.function.Function;
 

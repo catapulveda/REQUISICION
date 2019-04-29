@@ -4,8 +4,6 @@ import DAO.PedidoDAO;
 import DAO.RequisicionDAO;
 import com.jfoenix.controls.JFXTabPane;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
-import de.jensd.fx.glyphs.fontawesome.utils.FontAwesomeIconFactory;
 import fx.NavegadorDeContenidos;
 import java.io.IOException;
 import java.net.URL;
@@ -80,7 +78,9 @@ import model.Conexion;
 import model.Pedido;
 import model.Requisicion;
 import net.sf.jasperreports.engine.JRException;
-import util.FormattedTableCellFactory;
+import org.kordamp.ikonli.fontawesome.FontAwesome;
+import org.kordamp.ikonli.javafx.FontIcon;
+import FormatCell.FormattedTableCellFactory;
 
 public class RequisicionController implements Initializable {
 
@@ -283,7 +283,7 @@ public class RequisicionController implements Initializable {
             }
         });        
         
-        Button btnAgregar = new Button("", FontAwesomeIconFactory.get().createIcon(FontAwesomeIcon.PLUS, "16"));        
+        Button btnAgregar = new Button("", new FontIcon(FontAwesome.PLUS));
         btnAgregar.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent evt) {
@@ -354,15 +354,15 @@ public class RequisicionController implements Initializable {
 
         TableColumn colCantidad = new TableColumn("CANTIDAD");
         colCantidad.setCellValueFactory(new PropertyValueFactory("cantidadsolicitada"));
-        colCantidad.setCellFactory(tc -> new util.IntegerCell<>());        
+        colCantidad.setCellFactory(tc -> new FormatCell.IntegerCell<>());        
 
         TableColumn colPrecio = new TableColumn("PRECIO INICIAL");
         colPrecio.setCellValueFactory(new PropertyValueFactory("precioinicial"));
-        colPrecio.setCellFactory(tc -> new util.CurrencyCell<>());
+//        colPrecio.setCellFactory(tc -> new util.CurrencyCell<>());
 
         tablaPedido.getColumns().addAll(colIten, colProducto, colCantidad, colPrecio);        
         
-        MenuItem item = new MenuItem("Añadir nota", FontAwesomeIconFactory.get().createIcon(FontAwesomeIcon.PLUS, "12"));
+        MenuItem item = new MenuItem("Añadir nota", new FontIcon(FontAwesome.PLUS));
         item.setOnAction( action ->{
             Pedido ped = tablaPedido.getSelectionModel().getSelectedItem();
             
@@ -410,7 +410,7 @@ public class RequisicionController implements Initializable {
         contenedorReferencia.getChildren().addAll(new Label("Referencia:"), cjreferencia, btnAgregar);
         contenedorReferencia.setAlignment(Pos.CENTER);                        
                 
-        Button btnGuardarRequisicion = new Button("Guardar", FontAwesomeIconFactory.get().createIcon(FontAwesomeIcon.SAVE, "12"));
+        Button btnGuardarRequisicion = new Button("Guardar", new FontIcon(FontAwesome.SAVE));
         btnGuardarRequisicion.setOnAction( action-> {
             if(cjreferencia.getText().isEmpty()){
                 cjreferencia.getTooltip().setText("Ingrese una palabra clave que identifique la requisicion en general");

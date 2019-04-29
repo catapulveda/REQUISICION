@@ -25,6 +25,7 @@ public class NavegadorDeContenidos {
     public static String RECEPCION_DE_PEDIDOS = "/view/RecepcionDePedidos.fxml";
     public static String REGISTRAR_FACTURA = "/view/RegistrarRecepcionDePedido.fxml";
     public static String BUSCAR = "/view/BuscarTodo.fxml";
+    public static String RECIBIR_VARIOS = "/view/RecibirVarios.fxml";
 
     private static MainController mainController;
 

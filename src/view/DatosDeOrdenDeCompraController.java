@@ -12,8 +12,6 @@ import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
@@ -62,6 +60,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import model.Conexion;
@@ -72,6 +71,8 @@ import model.Producto;
 import model.Proveedor;
 import model.RecepcionDePedido;
 import net.sf.jasperreports.engine.JRException;
+import org.kordamp.ikonli.fontawesome.FontAwesome;
+import org.kordamp.ikonli.javafx.FontIcon;
 
 public class DatosDeOrdenDeCompraController implements Initializable {
 
@@ -170,7 +171,7 @@ public class DatosDeOrdenDeCompraController implements Initializable {
                 return new ReadOnlyObjectWrapper(0);
             }
         });
-        colItem.setCellFactory(tc -> new util.NumberRowCell<>());
+        colItem.setCellFactory(tc -> new FormatCell.NumberRowCell<>());
         colItem.setMinWidth(35);
 
         //colSeleccion.setCellValueFactory((CellDataFeatures<RecepcionDePedido, Boolean> p) -> p.getValue().seleccionadoProperty());
@@ -188,20 +189,20 @@ public class DatosDeOrdenDeCompraController implements Initializable {
                 booleanProp.addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
                     p.setSeleccionado(newValue);
                     System.out.println(newValue);
-                    if(p.getPedido().getCantidadsolicitada() > p.getCantidadrecibida() ){
-                        if(!newValue){
-                            listaRecepcionDePedidos.removeIf(rp -> rp.getPedido().getIdpedido() == p.getPedido().getIdpedido() );
-                        }else{
-                            System.out.println("AGREGADO "+p.getPedido().getProducto().getNombreproducto());
+                    if (p.getPedido().getCantidadsolicitada() > p.getCantidadrecibida()) {
+                        if (!newValue) {
+                            listaRecepcionDePedidos.removeIf(rp -> rp.getPedido().getIdpedido() == p.getPedido().getIdpedido());
+                        } else {
+                            System.out.println("AGREGADO " + p.getPedido().getProducto().getNombreproducto());
                             listaRecepcionDePedidos.add(p);
-                        }                        
-                    }                    
-                });                
+                        }
+                    }
+                });
                 return booleanProp;
             }
         });
         listaRecepcionDePedidos.addListener((ListChangeListener.Change<? extends RecepcionDePedido> c) -> {
-            btnRecibirPedidos.setText("Recibir ("+listaRecepcionDePedidos.stream().count()+")");
+            btnRecibirPedidos.setText("Recibir (" + listaRecepcionDePedidos.stream().count() + ")");
             btnRecibirPedidos.setDisable(listaRecepcionDePedidos.size() <= 0);
         });
 
@@ -226,7 +227,8 @@ public class DatosDeOrdenDeCompraController implements Initializable {
             @Override
             public TableCell call(TableColumn param) {
 
-                FontAwesomeIconView icon = new FontAwesomeIconView(FontAwesomeIcon.EYE, "16");
+                FontIcon icon = new FontIcon(FontAwesome.EYE);
+                icon.setIconSize(16);
                 Button btn = new Button("", icon);
 
                 TableCell tableCell = new TableCell() {
@@ -242,9 +244,11 @@ public class DatosDeOrdenDeCompraController implements Initializable {
                                     RecepcionDePedido ped = ((RecepcionDePedido) getTableView().getItems().get(getIndex()));
                                     FXMLLoader loader = new FXMLLoader(getClass().getResource(fx.NavegadorDeContenidos.RECEPCION_DE_PEDIDOS));
                                     AnchorPane root = loader.load();
+                                    
                                     RecepcionDePedidosController rpc = (RecepcionDePedidosController) loader.getController();
                                     rpc.setListaFacturas(listaFacturas);
                                     rpc.setPed(ped);
+                                    
                                     Stage stage = new Stage();
                                     Scene scene = new Scene(root);
                                     stage.setScene(scene);
@@ -416,22 +420,22 @@ public class DatosDeOrdenDeCompraController implements Initializable {
                         } else {
                             switch (item.getFormato()) {
                                 case "pdf":
-                                    setGraphic(new FontAwesomeIconView(FontAwesomeIcon.FILE_PDF_ALT));
+                                    setGraphic(new FontIcon(FontAwesome.FILE_PDF_O));
                                     break;
                                 case "xls":
-                                    setGraphic(new FontAwesomeIconView(FontAwesomeIcon.FILE_EXCEL_ALT));
+                                    setGraphic(new FontIcon(FontAwesome.FILE_EXCEL_O));
                                     break;
                                 case "xlsx":
-                                    setGraphic(new FontAwesomeIconView(FontAwesomeIcon.FILE_EXCEL_ALT));
+                                    setGraphic(new FontIcon(FontAwesome.FILE_EXCEL_O));
                                     break;
                                 case "png":
-                                    setGraphic(new FontAwesomeIconView(FontAwesomeIcon.FILE_IMAGE_ALT));
+                                    setGraphic(new FontIcon(FontAwesome.FILE_IMAGE_O));
                                     break;
                                 case "jpg":
-                                    setGraphic(new FontAwesomeIconView(FontAwesomeIcon.FILE_IMAGE_ALT));
+                                    setGraphic(new FontIcon(FontAwesome.FILE_IMAGE_O));
                                     break;
                                 default:
-                                    setGraphic(new FontAwesomeIconView(FontAwesomeIcon.QUESTION_CIRCLE_ALT));
+                                    setGraphic(new FontIcon(FontAwesome.QUESTION_CIRCLE_O));
                             }
                             setText(item.toString());
                         }
@@ -471,11 +475,12 @@ public class DatosDeOrdenDeCompraController implements Initializable {
                 }
             });
 
-            Button btnNuevo = new Button("Nuevo", new FontAwesomeIconView(FontAwesomeIcon.PLUS));
+            
+            Button btnNuevo = new Button("Nuevo", new FontIcon(FontAwesome.PLUS));
             btnNuevo.setOnAction((ActionEvent e) -> {
                 adjuntarFactura(buscarArchivo());
             });
-            Button btnAbrir = new Button("Abrir", new FontAwesomeIconView(FontAwesomeIcon.EYE));
+            Button btnAbrir = new Button("Abrir", new FontIcon(FontAwesome.EYE));
             btnAbrir.setOnAction(evt -> {
                 if (lista.getSelectionModel().getSelectedItem() != null) {
                     try {
@@ -566,7 +571,7 @@ public class DatosDeOrdenDeCompraController implements Initializable {
             cjobservaciones.setText(oc.getObservaciones());
             con = new Conexion();
 
-            String sql = "SELECT p.idproducto, p.nombreproducto, ped.idpedido, ped.cantidadsolicitada,\n"
+            String sql = "SELECT p.idproducto, p.nombreproducto, ped.idpedido, ped.cantidadsolicitada, ped.precioinicial, \n"
                     + "count(rp.cantidadrecibida) AS entregas, sum(rp.cantidadrecibida) as recibidos,\n"
                     + "(ped.cantidadsolicitada-sum(rp.cantidadrecibida)) as pendiente\n"
                     + "FROM ordendecompra oc\n"
@@ -588,12 +593,15 @@ public class DatosDeOrdenDeCompraController implements Initializable {
                     Pedido ped = new Pedido();
                     ped.setIdpedido(rs.getInt("idpedido"));
                     ped.setCantidadsolicitada(rs.getDouble("cantidadsolicitada"));
+                    ped.setPrecioinicial(rs.getDouble("precioinicial"));                    
                     ped.setProducto(p);
                     ped.setOc(oc);
                     ped.setSelected(false);
 
                     rp.setPedido(ped);
                     rp.setCantidadrecibida(rs.getDouble("recibidos"));
+                    rp.setPreciofinal(rs.getDouble("precioinicial"));
+                    rp.setPendiente( (ped.getCantidadsolicitada()-rp.getCantidadrecibida()) );
 
                     tabla.getItems().add(row, rp);
                     row++;
@@ -637,27 +645,46 @@ public class DatosDeOrdenDeCompraController implements Initializable {
     }
 
     @FXML
-    private void seleccionarTodos(ActionEvent event) {        
+    private void seleccionarTodos(ActionEvent event) {
         seleccionandoTodos(checkTodos.isSelected());
     }
 
     @FXML
-    private void recibirPedido(ActionEvent event) {
-        tabla.getItems().forEach((rp) -> {            
-            listaRecepcionDePedidos.add(rp);
-            System.out.println(rp.isSeleccionado());
+    private void recibirPedido(ActionEvent event) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(fx.NavegadorDeContenidos.RECIBIR_VARIOS));
+        javafx.scene.layout.VBox ap = loader.load();
+        
+        RecibirVariosController rvc = (RecibirVariosController) loader.getController();
+        rvc.setListaRecepcionDePedidos(listaRecepcionDePedidos);       
+           
+        Stage stage = new Stage();
+        
+        stage.setScene(new Scene(ap));
+        stage.initOwner(root.getScene().getWindow());
+        stage.initModality(Modality.WINDOW_MODAL);
+        stage.showAndWait();
+        if(rvc.isGUARDADO()){
+            tabla.refresh();
+            seleccionandoTodos(false);
+            listaRecepcionDePedidos.clear();            
+        }        
+        tabla.getItems().forEach((r) -> {
+            System.out.println(r.getPendiente());
         });
     }
-    
-    public void seleccionandoTodos(boolean estado){
+
+    public void seleccionandoTodos(boolean estado) {
+
         checkTodos.setSelected(estado);
         listaRecepcionDePedidos.clear();
         tabla.getItems().forEach((rp) -> {
-            rp.setSeleccionado(estado);
-            if(estado){
-                if(rp.getPedido().getCantidadsolicitada()>rp.getCantidadrecibida()){                    
+            if (estado) {
+                if (rp.getPedido().getCantidadsolicitada() > rp.getCantidadrecibida()) {
+                    rp.setSeleccionado(estado);
                     listaRecepcionDePedidos.add(rp);
-                }                
+                }
+            } else {
+                rp.setSeleccionado(estado);
             }
         });
         tabla.refresh();

@@ -1,26 +1,54 @@
-package util;
+package FormatCell;
 
-import java.text.DecimalFormat;
+import java.awt.event.FocusEvent;
 import java.text.NumberFormat;
 import javafx.geometry.Pos;
-
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.util.StringConverter;
 import model.Pedido;
 
-public class FormatoMoneda<T> extends TableCell<T, Double>{
+/**
+ *
+ * @author AUXPLANTA
+ */
+public class IntegerCell<T> extends TableCell<T, Double>{
     
     private final TextField textField ;
-    private final DecimalFormat decimalFormat = new DecimalFormat();
 
+//    private final NumberFormat format = NumberFormat.getIntegerInstance();
+    private final NumberFormat format = NumberFormat.getNumberInstance();
     private boolean esc = false;
-    
-    public FormatoMoneda() {
+    StringConverter<Double> converter = null;
+
+    public IntegerCell() {
+        this.textField = new TextField();
         
-        this.textField = new TextField();                
+        converter = new StringConverter<Double>() {
+
+            @Override
+            public String toString(Double object) {
+                return object == null ? "" : object.toString();
+            }
+
+            @Override
+            public Double fromString(String string) {                
+                return string.isEmpty() ? 0 : Double.parseDouble(string);                
+            }
+        };
+        
+        textField.setOnAction(e ->{
+            commitEdit(converter.fromString(textField.getText()));
+        });
+        textField.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
+            if (e.getCode() == KeyCode.ESCAPE) {
+                cancelEdit();
+            }
+        });
         
         textField.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
             if (null != event.getCode()) switch (event.getCode()) {
@@ -36,37 +64,35 @@ public class FormatoMoneda<T> extends TableCell<T, Double>{
                     event.consume();
                     break;
                 case RIGHT:
-                    commitEdit(Double.parseDouble(textField.getText()));
+                    commitEdit(converter.fromString(textField.getText()));
                     getTableView().getSelectionModel().selectNext();
                     event.consume();
                     break;                
                 case LEFT:
-                    commitEdit(Double.parseDouble(textField.getText()));
+                    commitEdit(converter.fromString(textField.getText()));
                     getTableView().getSelectionModel().selectPrevious();
                     event.consume();
                     break;
                 case UP:
-                    commitEdit(Double.parseDouble(textField.getText()));
+                    commitEdit(converter.fromString(textField.getText()));
                     getTableView().getSelectionModel().selectAboveCell();
                     event.consume();
                     break;
                 case DOWN:
-                    commitEdit(Double.parseDouble(textField.getText()));
+                    commitEdit(converter.fromString(textField.getText()));
                     getTableView().getSelectionModel().selectBelowCell();
                     event.consume();
                     break;                    
                 default:                    
                     break;
             }
-        });
-        
-        
-        
+        });        
+                
         setGraphic(textField);
         setContentDisplay(ContentDisplay.TEXT_ONLY);
         setAlignment(Pos.BASELINE_RIGHT);
     }
-
+    
     @Override
     protected void updateItem(Double item, boolean empty) {
         super.updateItem(item, empty);
@@ -83,11 +109,11 @@ public class FormatoMoneda<T> extends TableCell<T, Double>{
                     setDisabled(true);
                 }
             } catch (Exception e) {
-//                setDisabled(true);
-            }            
-            setText(NumberFormat.getCurrencyInstance().format(item));
+//                setDisabled(false);
+            }
+            setText(format.format(item));
             setContentDisplay(ContentDisplay.TEXT_ONLY);
-        }
+        }        
     }
 
     @Override
@@ -96,21 +122,19 @@ public class FormatoMoneda<T> extends TableCell<T, Double>{
         textField.setText("");
         setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
         textField.requestFocus();
+        //textField.selectAll();
         textField.end();
     }
 
     @Override
     public void cancelEdit() {
+        System.out.println(getItem()+"\t"+textField.getText());
         if(esc){
-            setText(NumberFormat.getCurrencyInstance().format(getItem()));
-        }else{
-            try {
-                setText(NumberFormat.getCurrencyInstance().format(Double.parseDouble(textField.getText())));
-                commitEdit(Double.parseDouble(textField.getText()));
-            } catch (java.lang.NumberFormatException e) {
-//                setText(NumberFormat.getCurrencyInstance().format(Double.parseDouble("0")));
-//                commitEdit(Double.parseDouble("0"));
-            }
+            System.out.println("CANCELADO "+getItem());
+            setText(format.format(getItem()));            
+        }else{            
+            setText(""+converter.fromString(textField.getText()));
+            commitEdit(converter.fromString(textField.getText()));
         }
         super.cancelEdit();
         setContentDisplay(ContentDisplay.TEXT_ONLY);
