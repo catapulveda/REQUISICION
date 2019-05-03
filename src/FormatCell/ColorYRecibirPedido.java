@@ -16,19 +16,20 @@ import javafx.scene.control.TextFormatter;
 import javafx.scene.control.TextFormatter.Change;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.paint.Color;
 import javafx.util.StringConverter;
 import model.Pedido;
+import model.RecepcionDePedido;
 
-public class DoubleCell<T, S> extends TableCell<T, Double> {
+public class ColorYRecibirPedido extends TableCell<RecepcionDePedido, Double> {
 
     private final TextField textField;
 
     private final NumberFormat numberFormat = DecimalFormat.getNumberInstance(Locale.getDefault());
     private final DecimalFormat decimalFormat = new DecimalFormat("0.0");
 
-    
-    public DoubleCell() {
-        
+    public ColorYRecibirPedido() {
+
         this.textField = new TextField();
         StringConverter<Double> converter = new StringConverter<Double>() {
 
@@ -65,8 +66,10 @@ public class DoubleCell<T, S> extends TableCell<T, Double> {
         TextFormatter<Double> textFormatter = new TextFormatter<>(converter, 0.0, filter);
         textField.setTextFormatter(textFormatter);
 
-        textField.setOnAction(e ->{  
-            commitEdit(converter.fromString(textField.getText()));
+        textField.setOnAction(e -> {
+            if (converter.fromString(textField.getText())>0 && converter.fromString(textField.getText()) <= getTableView().getItems().get(getIndex()).getPedido().getCantidadsolicitada()) {
+                commitEdit(converter.fromString(textField.getText()));
+            }
         });
         textField.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
             if (e.getCode() == KeyCode.ESCAPE) {
@@ -88,8 +91,21 @@ public class DoubleCell<T, S> extends TableCell<T, Double> {
             textField.setText(item.toString());
             setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
         } else {
+            RecepcionDePedido rdp = getTableView().getItems().get(getIndex());
+            if(rdp.getCantidadrecibida()==rdp.getPedido().getCantidadsolicitada()){
+                setDisable(true);
+            }
+            if ( item>0 ) {
+                setStyle("-fx-background-insets: 0 0 1 0 ;-fx-background-color: -fx-background;"
+                        + "-fx-background: #d14836;-fx-font-weight: bold;");
+            } else {
+                setStyle("-fx-background-insets: 0 0 1 0 ;-fx-background-color: -fx-background;"
+                        + "-fx-background: #3cba54;-fx-font-weight: bold;");
+            }
             setText(numberFormat.format(item));
             setContentDisplay(ContentDisplay.TEXT_ONLY);
+            setAlignment(Pos.CENTER);
+            setTextFill(Color.ANTIQUEWHITE);
         }
     }
 

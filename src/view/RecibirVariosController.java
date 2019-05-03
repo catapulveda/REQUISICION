@@ -3,6 +3,7 @@ package view;
 import DAO.RecepcionDePedidoDAO;
 import FormatCell.CurrencyCell;
 import FormatCell.DoubleCell;
+import FormatCell.ColorYRecibirPedido;
 import com.jfoenix.controls.JFXDatePicker;
 import java.net.URL;
 import java.sql.SQLException;
@@ -53,19 +54,23 @@ public class RecibirVariosController implements Initializable {
     private ObservableList<RecepcionDePedido> lista = FXCollections.observableArrayList();
     private Conexion con;
     private boolean GUARDADO = false;
+    @FXML
+    private TableColumn colRecibidas;
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         
         colPendientes.setStyle("-fx-alignment: CENTER;");
         colPendientes.setCellValueFactory(new PropertyValueFactory<>("pendiente"));
-        colPendientes.setCellFactory(tc -> new DoubleCell<>());
-        colPendientes.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<RecepcionDePedido, Double>>() {
-            @Override
-            public void handle(TableColumn.CellEditEvent<RecepcionDePedido, Double> event) {
-                ((RecepcionDePedido) event.getTableView().getItems().get(event.getTablePosition().getRow())).setPendiente(event.getNewValue());
-            }
-        });
+        
+        colRecibidas.setStyle("-fx-alignment: CENTER;");
+        colRecibidas.setCellValueFactory(new PropertyValueFactory<>("pendiente"));        
+//        colPendientes.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<RecepcionDePedido, Double>>() {
+//            @Override
+//            public void handle(TableColumn.CellEditEvent<RecepcionDePedido, Double> event) {
+//                ((RecepcionDePedido) event.getTableView().getItems().get(event.getTablePosition().getRow())).setPendiente(event.getNewValue());
+//            }
+//        });
         
         colValorFinal.setCellValueFactory(new PropertyValueFactory<>("preciofinal"));
         colValorFinal.setCellFactory(tc -> new CurrencyCell<>());        

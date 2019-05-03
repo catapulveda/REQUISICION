@@ -4,6 +4,8 @@ import DAO.CentroDeCostosDAO;
 import DAO.FacturaDAO;
 import DAO.OrdenDeCompraDAO;
 import DAO.ProveedorDAO;
+import DAO.RecepcionDePedidoDAO;
+import FormatCell.DoubleCell;
 import SearchComboBox.SearchComboBox;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXCheckBox;
@@ -19,6 +21,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,22 +37,29 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
+import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
@@ -145,7 +155,9 @@ public class DatosDeOrdenDeCompraController implements Initializable {
     @FXML
     private Button btnRecibirPedidos;
 
-    private ObservableList<RecepcionDePedido> listaRecepcionDePedidos = FXCollections.observableArrayList();
+    private ObservableList<RecepcionDePedido> listaRecibidos = FXCollections.observableArrayList();
+    @FXML
+    private TableColumn colValorFinal;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -164,6 +176,12 @@ public class DatosDeOrdenDeCompraController implements Initializable {
         tabla.getSelectionModel().setCellSelectionEnabled(true);
         tabla.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         tabla.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
+        tabla.setOnKeyPressed(evt -> {            
+            if ( evt.getCode().isDigitKey()) {
+                final TablePosition focusedCell = tabla.focusModelProperty().get().focusedCellProperty().get();
+                tabla.edit(focusedCell.getRow(), focusedCell.getTableColumn());
+            }
+        });
 
         colItem.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<model.RecepcionDePedido, Integer>, ObservableValue<Integer>>() {
             @Override
@@ -174,12 +192,7 @@ public class DatosDeOrdenDeCompraController implements Initializable {
         colItem.setCellFactory(tc -> new FormatCell.NumberRowCell<>());
         colItem.setMinWidth(35);
 
-        //colSeleccion.setCellValueFactory((CellDataFeatures<RecepcionDePedido, Boolean> p) -> p.getValue().seleccionadoProperty());
-//        colSeleccion.setCellValueFactory(new PropertyValueFactory("seleccionado"));
-//        colSeleccion.setStyle("-fx-alignment: CENTER;");
-//        colSeleccion.getStyleClass().add("check-box-table-cell");
         colSeleccion.setCellValueFactory(new Callback<CellDataFeatures<RecepcionDePedido, Boolean>, ObservableValue<Boolean>>() {
-
             @Override
             public ObservableValue<Boolean> call(CellDataFeatures<RecepcionDePedido, Boolean> param) {
                 RecepcionDePedido p = param.getValue();
@@ -188,22 +201,21 @@ public class DatosDeOrdenDeCompraController implements Initializable {
 
                 booleanProp.addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
                     p.setSeleccionado(newValue);
-                    System.out.println(newValue);
                     if (p.getPedido().getCantidadsolicitada() > p.getCantidadrecibida()) {
                         if (!newValue) {
-                            listaRecepcionDePedidos.removeIf(rp -> rp.getPedido().getIdpedido() == p.getPedido().getIdpedido());
+                            listaRecibidos.removeIf(rp -> rp.getPedido().getIdpedido() == p.getPedido().getIdpedido());
                         } else {
-                            System.out.println("AGREGADO " + p.getPedido().getProducto().getNombreproducto());
-                            listaRecepcionDePedidos.add(p);
+                            listaRecibidos.add(p);
                         }
                     }
                 });
                 return booleanProp;
             }
         });
-        listaRecepcionDePedidos.addListener((ListChangeListener.Change<? extends RecepcionDePedido> c) -> {
-            btnRecibirPedidos.setText("Recibir (" + listaRecepcionDePedidos.stream().count() + ")");
-            btnRecibirPedidos.setDisable(listaRecepcionDePedidos.size() <= 0);
+
+        listaRecibidos.addListener((ListChangeListener.Change<? extends RecepcionDePedido> c) -> {
+            btnRecibirPedidos.setText("Recibir (" + listaRecibidos.stream().count() + ")");
+            btnRecibirPedidos.setDisable(listaRecibidos.size() <= 0);
         });
 
         colSeleccion.setCellFactory(new Callback<TableColumn<RecepcionDePedido, Boolean>, TableCell<RecepcionDePedido, Boolean>>() {
@@ -244,11 +256,11 @@ public class DatosDeOrdenDeCompraController implements Initializable {
                                     RecepcionDePedido ped = ((RecepcionDePedido) getTableView().getItems().get(getIndex()));
                                     FXMLLoader loader = new FXMLLoader(getClass().getResource(fx.NavegadorDeContenidos.RECEPCION_DE_PEDIDOS));
                                     AnchorPane root = loader.load();
-                                    
+
                                     RecepcionDePedidosController rpc = (RecepcionDePedidosController) loader.getController();
                                     rpc.setListaFacturas(listaFacturas);
                                     rpc.setPed(ped);
-                                    
+
                                     Stage stage = new Stage();
                                     Scene scene = new Scene(root);
                                     stage.setScene(scene);
@@ -266,34 +278,18 @@ public class DatosDeOrdenDeCompraController implements Initializable {
             }
         });
 
-        colCantPend.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<model.RecepcionDePedido, Integer>, ObservableValue<Integer>>() {
+        colCantPend.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<RecepcionDePedido, Double>>() {
             @Override
-            public ObservableValue<Integer> call(TableColumn.CellDataFeatures<model.RecepcionDePedido, Integer> p) {
-                return new ReadOnlyObjectWrapper(0);
+            public void handle(TableColumn.CellEditEvent<RecepcionDePedido, Double> event) {
+                ((RecepcionDePedido) event.getTableView().getItems().get(event.getTablePosition().getRow())).setPendiente(event.getNewValue());
             }
         });
+        colCantPend.setCellValueFactory(new PropertyValueFactory("pendiente"));
+        colCantPend.setCellFactory(tc -> new FormatCell.ColorYRecibirPedido());
+                
 
-        colCantPend.setCellFactory(tc -> new TableCell<RecepcionDePedido, Integer>() {
-            @Override
-            protected void updateItem(Integer item, boolean empty) {
-                super.updateItem(item, empty);
-                if (item != null) {
-                    Double solicitada = getTableView().getItems().get(getIndex()).getPedido().getCantidadsolicitada();
-                    double recibida = getTableView().getItems().get(getIndex()).getCantidadrecibida();
-                    double pendiente = solicitada - recibida;
-                    setText(String.valueOf(pendiente));
-                    setAlignment(Pos.CENTER);
-                    setTextFill(Color.ANTIQUEWHITE);
-                    if (pendiente > 0) {
-                        setStyle("-fx-background-insets: 0 0 1 0 ;-fx-background-color: -fx-background;"
-                                + "-fx-background: #d14836;-fx-font-weight: bold;");
-                    } else {
-                        setStyle("-fx-background-insets: 0 0 1 0 ;-fx-background-color: -fx-background;"
-                                + "-fx-background: #3cba54;-fx-font-weight: bold;");
-                    }
-                }
-            }
-        });
+        colValorFinal.setCellValueFactory(new PropertyValueFactory("preciofinal"));
+        colValorFinal.setCellFactory(tc -> new FormatCell.CurrencyCell<>());
 
         colProducto.setCellValueFactory(cellData -> {
             return new SimpleStringProperty(cellData.getValue().getPedido().getProducto().getNombreproducto());
@@ -475,7 +471,6 @@ public class DatosDeOrdenDeCompraController implements Initializable {
                 }
             });
 
-            
             Button btnNuevo = new Button("Nuevo", new FontIcon(FontAwesome.PLUS));
             btnNuevo.setOnAction((ActionEvent e) -> {
                 adjuntarFactura(buscarArchivo());
@@ -593,7 +588,7 @@ public class DatosDeOrdenDeCompraController implements Initializable {
                     Pedido ped = new Pedido();
                     ped.setIdpedido(rs.getInt("idpedido"));
                     ped.setCantidadsolicitada(rs.getDouble("cantidadsolicitada"));
-                    ped.setPrecioinicial(rs.getDouble("precioinicial"));                    
+                    ped.setPrecioinicial(rs.getDouble("precioinicial"));
                     ped.setProducto(p);
                     ped.setOc(oc);
                     ped.setSelected(false);
@@ -601,7 +596,7 @@ public class DatosDeOrdenDeCompraController implements Initializable {
                     rp.setPedido(ped);
                     rp.setCantidadrecibida(rs.getDouble("recibidos"));
                     rp.setPreciofinal(rs.getDouble("precioinicial"));
-                    rp.setPendiente( (ped.getCantidadsolicitada()-rp.getCantidadrecibida()) );
+                    rp.setPendiente((ped.getCantidadsolicitada() - rp.getCantidadrecibida()));
 
                     tabla.getItems().add(row, rp);
                     row++;
@@ -649,39 +644,98 @@ public class DatosDeOrdenDeCompraController implements Initializable {
         seleccionandoTodos(checkTodos.isSelected());
     }
 
+    int n = 1;
     @FXML
     private void recibirPedido(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource(fx.NavegadorDeContenidos.RECIBIR_VARIOS));
-        javafx.scene.layout.VBox ap = loader.load();
+
+        VBox rootvBox = new VBox();
+
+        Label lbl0 = new Label("Fecha:");
+        DatePicker cjFecha = new DatePicker(LocalDate.now());
+        rootvBox.getChildren().addAll(lbl0, cjFecha);
+
+        Label lbl1 = new Label("Nº Factura:");
+        TextField cjFactura = new TextField();
+        rootvBox.getChildren().addAll(lbl1, cjFactura);
+
+        Label lbl2 = new Label("Nº Remision:");
+        TextField cjRemision = new TextField();
+        rootvBox.getChildren().addAll(lbl2, cjRemision);
+
+        Button btnGuardar = new Button("Guardar");
+        rootvBox.getChildren().addAll(btnGuardar);
+
+        rootvBox.setSpacing(5);
+        rootvBox.setPadding(new Insets(10, 10, 20, 10));
         
-        RecibirVariosController rvc = (RecibirVariosController) loader.getController();
-        rvc.setListaRecepcionDePedidos(listaRecepcionDePedidos);       
-           
+        btnGuardar.setOnAction(evt -> {
+            LocalDate fecha = cjFecha.getValue();
+            String factura = cjFactura.getText();
+            String remision = cjRemision.getText();
+            
+            RecepcionDePedido rp = new RecepcionDePedido();
+            rp.setFactura(factura);
+            rp.setFechaderecibido(fecha);
+            rp.setRemision(remision);
+            
+            con = new Conexion();
+            RecepcionDePedidoDAO rpDAO = new RecepcionDePedidoDAO(con);
+            
+            listaRecibidos.stream().map((i) -> {
+                rp.setCantidadrecibida(i.getPendiente());
+                return i;
+            }).map((i) -> {
+                rp.setPreciofinal(i.getPreciofinal());
+                return i;
+            }).map((i) -> {
+                rp.setObservaciones("");
+                rp.setPedido(i.getPedido());
+                return i;
+            }).forEachOrdered((i) -> {
+                try {
+                    if (rpDAO.guardar(rp) > 0) {
+                        i.setCantidadrecibida((i.getCantidadrecibida() + i.getPendiente()));
+                        i.setPendiente(i.getPedido().getCantidadsolicitada()-i.getCantidadrecibida());
+                        n++;
+                    }
+                } catch (SQLException ex) {
+                    Logger.getLogger(DatosDeOrdenDeCompraController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            });
+            con.CERRAR();
+            
+            if((n-1)==listaRecibidos.size()){
+                ((Stage)rootvBox.getScene().getWindow()).close();
+            }            
+        });
+
         Stage stage = new Stage();
-        
-        stage.setScene(new Scene(ap));
+
+        Scene scene = new Scene(rootvBox);
+
+        stage.setTitle("Recibir productos");
+        stage.setScene(scene);
         stage.initOwner(root.getScene().getWindow());
         stage.initModality(Modality.WINDOW_MODAL);
         stage.showAndWait();
-        if(rvc.isGUARDADO()){
+
+        if((n-1)==listaRecibidos.size()){
             tabla.refresh();
             seleccionandoTodos(false);
-            listaRecepcionDePedidos.clear();            
-        }        
-        tabla.getItems().forEach((r) -> {
-            System.out.println(r.getPendiente());
-        });
+            listaRecibidos.clear();
+            n = 1;
+        }
     }
 
     public void seleccionandoTodos(boolean estado) {
 
         checkTodos.setSelected(estado);
-        listaRecepcionDePedidos.clear();
+        listaRecibidos.clear();
         tabla.getItems().forEach((rp) -> {
             if (estado) {
                 if (rp.getPedido().getCantidadsolicitada() > rp.getCantidadrecibida()) {
                     rp.setSeleccionado(estado);
-                    listaRecepcionDePedidos.add(rp);
+                    listaRecibidos.add(rp);
                 }
             } else {
                 rp.setSeleccionado(estado);

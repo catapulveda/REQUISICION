@@ -35,6 +35,7 @@
       <TableView fx:id="tabla" editable="true" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
         <columns>
             <TableColumn fx:id="colPendientes" prefWidth="75.0" text="PENDIENTE" />
+            <TableColumn fx:id="colRecibidas" prefWidth="75.0" text="PENDIENTE" />
             <TableColumn fx:id="colValorFinal" prefWidth="75.0" text="VALOR FINAL" />
             <TableColumn fx:id="colProducto" prefWidth="75.0" text="NOMBRE" />
         </columns>

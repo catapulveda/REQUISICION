@@ -97,6 +97,7 @@ public class RequisicionController implements Initializable {
     @FXML TableColumn<Requisicion, String> colReferencia;
     @FXML TableColumn<Requisicion, LocalDateTime> colFecha;
     @FXML TableColumn<Requisicion, Integer> colTotalProductos;
+    @FXML private TableColumn<Requisicion, Integer> colTotalConOrdenes;
 
     @FXML Button btnListar;
     @FXML Button btnImprimir;
@@ -107,7 +108,7 @@ public class RequisicionController implements Initializable {
 
     @FXML JFXTabPane tabPane;
     
-    Conexion con;
+    Conexion con;    
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -160,6 +161,28 @@ public class RequisicionController implements Initializable {
                 return cell;
             }
         });
+        
+        colTotalConOrdenes.setCellValueFactory(new PropertyValueFactory<>("totalpendientes"));
+        colTotalConOrdenes.setStyle("-fx-alignment: CENTER;");
+        colTotalConOrdenes.setCellFactory(column -> {
+            return new TableCell<Requisicion, Integer>() {
+                @Override
+                protected void updateItem(Integer item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if(!empty){
+                        setAlignment(Pos.CENTER);
+                        setText(item.toString());
+                        if(item>0){
+                            setStyle("-fx-background-insets: 0 0 1 0 ;-fx-background-color: -fx-background;"
+                        + "-fx-background: #d14836;-fx-font-weight: bold;");
+                        }else{
+                            setStyle(null);
+                        }
+                    }
+                }
+            };
+        });
+        
         btnListar.fire();
     }
 
@@ -228,7 +251,6 @@ public class RequisicionController implements Initializable {
 
     Tab tabNuevoRequisicion = null;
 
-    @FXML
     void nuevaRequisicion(ActionEvent evt) {
         
         int num_req = util.Metodos.getConsecutivo("numerorequisicion", false);

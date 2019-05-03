@@ -86,6 +86,7 @@
                                   <TableColumn fx:id="colNumeroRequisicion" prefWidth="75.0" text="Nº" />
                                     <TableColumn fx:id="colFecha" prefWidth="75.0" text="FECHA" />
                                     <TableColumn fx:id="colTotalProductos" prefWidth="75.0" text="# ITEMS" />
+                                    <TableColumn fx:id="colTotalConOrdenes" prefWidth="75.0" text="PENDIENTES" />
                                   <TableColumn fx:id="colReferencia" prefWidth="75.0" text="REFERENCIA" />
                                 </columns>
                               </TableView>

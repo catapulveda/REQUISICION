@@ -15,6 +15,8 @@ public class Requisicion {
     private StringProperty referencia;
     private ObjectProperty<LocalDateTime> fechaderegistro;
     private IntegerProperty totalProductos;
+    private final IntegerProperty totalpendientes = new SimpleIntegerProperty();   
+    
     private Usuario usuario;
     
     public Requisicion() {
@@ -25,6 +27,18 @@ public class Requisicion {
         this.totalProductos = new SimpleIntegerProperty();
     }
 
+    public int getTotalpendientes() {
+        return totalpendientes.get();
+    }
+
+    public void setTotalpendientes(int value) {
+        totalpendientes.set(value);
+    }
+
+    public IntegerProperty totalpendientesProperty() {
+        return totalpendientes;
+    }
+    
     public final int getTotalProductos() {
         return totalProductos.get();
     }
