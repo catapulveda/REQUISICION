@@ -16,7 +16,7 @@
 <?import javafx.scene.text.Font?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<AnchorPane id="AnchorPane" fx:id="anchorPane" prefHeight="485.0" prefWidth="386.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.GuardarOrdenDeCompraController">
+<AnchorPane id="AnchorPane" fx:id="anchorPane" prefHeight="563.0" prefWidth="386.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.GuardarOrdenDeCompraController">
    <children>
       <GridPane fx:id="gridPane" hgap="5.0" layoutX="117.0" layoutY="99.0" prefHeight="491.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
@@ -27,6 +27,7 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -79,17 +80,17 @@
                   <Font name="Verdana" size="12.0" />
                </font>
             </Label>
-            <Label text="IVA:" GridPane.rowIndex="8">
+            <Label text="IVA (%):" GridPane.rowIndex="8">
                <font>
                   <Font name="Verdana" size="12.0" />
                </font>
             </Label>
-            <Label text="Forma de Pago:" GridPane.rowIndex="10">
+            <Label text="Forma de Pago:" GridPane.rowIndex="11">
                <font>
                   <Font name="Verdana" size="12.0" />
                </font>
             </Label>
-            <Label text="Observaciones:" GridPane.rowIndex="11">
+            <Label text="Observaciones:" GridPane.rowIndex="12">
                <font>
                   <Font name="Verdana" size="12.0" />
                </font>
@@ -101,10 +102,10 @@
             <JFXTextField fx:id="cjtransportadora" GridPane.columnIndex="1" GridPane.rowIndex="6" />
             <JFXTextField fx:id="cjnumerodeguia" GridPane.columnIndex="1" GridPane.rowIndex="7" />
             <JFXTextField fx:id="cjiva" text="0" GridPane.columnIndex="1" GridPane.rowIndex="8" />
-            <JFXCheckBox fx:id="checkExentoIva" text="Exento de IVA" GridPane.columnIndex="1" GridPane.rowIndex="9" />
-            <JFXComboBox fx:id="comboFormaPago" prefHeight="25.0" prefWidth="149.0" GridPane.columnIndex="1" GridPane.rowIndex="10" />
-            <JFXTextArea fx:id="cjobservaciones" style="-fx-background-color: #fff;" GridPane.columnIndex="1" GridPane.rowIndex="11" />
-            <JFXButton fx:id="btnGuardar" onAction="#guardarOrden" text="Guardar" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="12" GridPane.valignment="CENTER">
+            <JFXCheckBox fx:id="checkExentoIva" text="Exento de IVA" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+            <JFXComboBox fx:id="comboFormaPago" prefHeight="25.0" prefWidth="149.0" GridPane.columnIndex="1" GridPane.rowIndex="11" />
+            <JFXTextArea fx:id="cjobservaciones" style="-fx-background-color: #fff;" GridPane.columnIndex="1" GridPane.rowIndex="12" />
+            <JFXButton fx:id="btnGuardar" onAction="#guardarOrden" text="Guardar" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="13" GridPane.valignment="CENTER">
                <styleClass>
                   <String fx:value="btn" />
                   <String fx:value="btn-success" />
@@ -114,6 +115,12 @@
                   <FontIcon iconLiteral="fa-save" iconSize="18" />
                </graphic></JFXButton>
             <JFXTextField fx:id="cjcentrodecostos" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <Label text="Valor IVA ($):" GridPane.rowIndex="9">
+               <font>
+                  <Font name="Verdana" size="12.0" />
+               </font>
+            </Label>
+            <JFXTextField fx:id="cjvaloriva" text="0" GridPane.columnIndex="1" GridPane.rowIndex="9" />
          </children>
       </GridPane>
    </children>

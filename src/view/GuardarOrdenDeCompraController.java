@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -26,8 +25,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-import javax.swing.JOptionPane;
-import model.CentroDeCostos;
 import model.Conexion;
 import model.OrdenDeCompra;
 import model.Pedido;
@@ -65,6 +62,8 @@ public class GuardarOrdenDeCompraController implements Initializable {
     private int idorden = -1;
     
     private ObservableList<Pedido> listaSeleccionados;
+    @FXML
+    private JFXTextField cjvaloriva;
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
