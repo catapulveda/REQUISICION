@@ -46,7 +46,7 @@ public class ButtonCellOrdenes<T> extends TableCell<T, String> {
         if (empty) {
             setGraphic(null);
             setText(null);
-        } else {            
+        } else {
             btnAbrir.setOnAction(event -> {
                 try {
                     OrdenDeCompra oc = (OrdenDeCompra) getTableView().getItems().get(getIndex());

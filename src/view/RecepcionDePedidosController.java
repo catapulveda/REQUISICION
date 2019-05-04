@@ -34,6 +34,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.Conexion;
 import model.Factura;
@@ -44,7 +45,7 @@ import org.kordamp.ikonli.javafx.FontIcon;
 public class RecepcionDePedidosController implements Initializable {
 
     @FXML
-    AnchorPane anchorPane;
+    AnchorPane root;
     @FXML
     VBox vbox;
     @FXML
@@ -99,13 +100,15 @@ public class RecepcionDePedidosController implements Initializable {
     @FXML
     void agregarFactura(ActionEvent evt) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource(fx.NavegadorDeContenidos.REGISTRAR_FACTURA));
-        AnchorPane root = loader.load();
+        AnchorPane ap = loader.load();
         RegistrarRecepcionDePedidoController rpc = (RegistrarRecepcionDePedidoController) loader.getController();
         rpc.setPedido(getRecepcionDePedido());
 
         Stage stage = new Stage();
-        Scene scene = new Scene(root);
+        Scene scene = new Scene(ap);
         stage.setScene(scene);
+        stage.initOwner(root.getScene().getWindow());
+        stage.initModality(Modality.APPLICATION_MODAL);
         stage.showAndWait();
         tabla.getItems().clear();
         setPed(getRecepcionDePedido());

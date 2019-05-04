@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ORDEN" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="b688c86a-8ef6-4ecc-8470-8d45a0a922e9">
-	<property name="ireport.zoom" value="2.0"/>
-	<property name="ireport.x" value="259"/>
-	<property name="ireport.y" value="492"/>
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#000000"/>
@@ -37,6 +37,7 @@
 	<subDataset name="PEDIDO" uuid="49b93b71-b60c-4a0d-bb64-76874deed468">
 		<parameter name="IDORDEN_TABLA" class="java.lang.Integer" isForPrompting="false"/>
 		<parameter name="IVA" class="java.lang.Integer" isForPrompting="false"/>
+		<parameter name="valoriva" class="java.lang.Double"/>
 		<queryString>
 			<![CDATA[SELECT p.nombreproducto, p.medida, ped.cantidadsolicitada, ped.precioinicial, ped.observaciones,
 (ped.cantidadsolicitada*ped.precioinicial) as total
@@ -100,6 +101,7 @@ req.numerorequisicion, ur.nombreusuario, uc.nombreusuario;]]>
 	<field name="iva" class="java.lang.Integer"/>
 	<field name="exentodeiva" class="java.lang.Boolean"/>
 	<field name="centrodecostos" class="java.lang.String"/>
+	<field name="valoriva" class="java.lang.Double"/>
 	<background>
 		<band height="752" splitType="Stretch">
 			<image scaleImage="RetainShape" hAlign="Center" vAlign="Middle">
@@ -389,12 +391,15 @@ req.numerorequisicion, ur.nombreusuario, uc.nombreusuario;]]>
 			<componentElement>
 				<reportElement key="table" style="table" x="0" y="0" width="572" height="60" uuid="d1bd40ed-38b2-496d-8aa2-5569ab61f028"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
-					<datasetRun subDataset="PEDIDO" uuid="41a874b5-03c4-4d40-a151-a003ba773a1a">
+					<datasetRun subDataset="PEDIDO" uuid="dc22c8ce-0d22-467f-9228-64ebba76bed9">
 						<datasetParameter name="IDORDEN_TABLA">
 							<datasetParameterExpression><![CDATA[$P{IDORDEN}]]></datasetParameterExpression>
 						</datasetParameter>
 						<datasetParameter name="IVA">
 							<datasetParameterExpression><![CDATA[$F{iva}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="valoriva">
+							<datasetParameterExpression><![CDATA[$F{valoriva}]]></datasetParameterExpression>
 						</datasetParameter>
 						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 					</datasetRun>
@@ -496,7 +501,7 @@ req.numerorequisicion, ur.nombreusuario, uc.nombreusuario;]]>
 									</textField>
 								</jr:tableFooter>
 								<jr:column width="90" uuid="8cf93cc7-94d5-4ba9-83ec-82367c50829b">
-									<jr:tableFooter style="table_CH" height="20" rowSpan="1">
+									<jr:tableFooter style="table_CH" height="21" rowSpan="1">
 										<staticText>
 											<reportElement x="0" y="0" width="90" height="20" uuid="f8baa9b3-a6bd-4e67-b988-e61c38a67f4b"/>
 											<textElement textAlignment="Right" verticalAlignment="Middle">
@@ -543,11 +548,11 @@ req.numerorequisicion, ur.nombreusuario, uc.nombreusuario;]]>
 										<textElement textAlignment="Right" verticalAlignment="Middle">
 											<font fontName="Ebrima" size="9"/>
 										</textElement>
-										<textFieldExpression><![CDATA[$V{SUBTOTAL}*$P{IVA}/100]]></textFieldExpression>
+										<textFieldExpression><![CDATA[($P{valoriva}==0)?$V{SUBTOTAL}*$P{IVA}/100:$P{valoriva}]]></textFieldExpression>
 									</textField>
 								</jr:tableFooter>
 								<jr:column width="90" uuid="9c99b378-9fb9-48bf-bcde-883dff353179">
-									<jr:tableFooter style="table_CH" height="20" rowSpan="1">
+									<jr:tableFooter style="table_CH" height="21" rowSpan="1">
 										<textField pattern="¤ #,##0.00">
 											<reportElement x="0" y="0" width="85" height="20" uuid="3f137154-4fc9-47b6-8232-b0e5c38f5510"/>
 											<textElement textAlignment="Right" verticalAlignment="Middle">

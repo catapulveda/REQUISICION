@@ -5,15 +5,7 @@ import DAO.FacturaDAO;
 import DAO.OrdenDeCompraDAO;
 import DAO.ProveedorDAO;
 import DAO.RecepcionDePedidoDAO;
-import FormatCell.DoubleCell;
-import SearchComboBox.SearchComboBox;
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXCheckBox;
-import com.jfoenix.controls.JFXComboBox;
-import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXListView;
-import com.jfoenix.controls.JFXTextArea;
-import com.jfoenix.controls.JFXTextField;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
@@ -22,9 +14,6 @@ import java.nio.file.Files;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -37,13 +26,13 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -65,12 +54,11 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import model.Conexion;
@@ -78,9 +66,7 @@ import model.Factura;
 import model.OrdenDeCompra;
 import model.Pedido;
 import model.Producto;
-import model.Proveedor;
 import model.RecepcionDePedido;
-import net.sf.jasperreports.engine.JRException;
 import org.kordamp.ikonli.fontawesome.FontAwesome;
 import org.kordamp.ikonli.javafx.FontIcon;
 
@@ -90,36 +76,7 @@ public class DatosDeOrdenDeCompraController implements Initializable {
     AnchorPane root;
 
     @FXML
-    JFXTextField cjnumerodeorden;
-    @FXML
-    JFXDatePicker cjfecha;
-    SearchComboBox<Proveedor> comboProveedor = new SearchComboBox<>();
-    //@FXML JFXComboBox<Proveedor> comboProveedor;
-    @FXML
-    JFXTextField cjcentrodecostos;
-    @FXML
-    JFXTextField cjcontacto;
-    @FXML
-    JFXTextField cjcargoflete;
-    @FXML
-    JFXTextField cjtransportadora;
-    @FXML
-    JFXTextField cjnumerodeguia;
-    @FXML
-    JFXTextField cjiva;
-    @FXML
-    JFXCheckBox checkExentoIva;
-    @FXML
-    JFXComboBox comboFormaPago;
-    @FXML
-    JFXTextArea cjobservaciones;
-    @FXML
-    JFXButton btnGuardar;
-    @FXML
     Button btnDevolver;
-
-    @FXML
-    GridPane gridPane;
 
     @FXML
     TableView<RecepcionDePedido> tabla;
@@ -144,8 +101,8 @@ public class DatosDeOrdenDeCompraController implements Initializable {
 
     ProveedorDAO pvDAO = new ProveedorDAO();
     CentroDeCostosDAO ccDAO = new CentroDeCostosDAO();
-    OrdenDeCompraDAO ocDAO = new OrdenDeCompraDAO();
 
+    OrdenDeCompraDAO ocDAO;
     Conexion con;
 
     private int idorden = -1;
@@ -158,6 +115,8 @@ public class DatosDeOrdenDeCompraController implements Initializable {
     private ObservableList<RecepcionDePedido> listaRecibidos = FXCollections.observableArrayList();
     @FXML
     private TableColumn colValorFinal;
+    @FXML
+    private Button btnVerDatosOrden;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -166,18 +125,11 @@ public class DatosDeOrdenDeCompraController implements Initializable {
             btnAdjuntar.setText("Facturas (" + listaFacturas.size() + ")");
         });
 
-        comboFormaPago.getItems().addAll("CREDITO", "CONTADO", "DEBITO");
-
-//        comboProveedor.setItems(pvDAO.getProveedores());
-        comboProveedor.setItems(pvDAO.getProveedores());
-        comboProveedor.setFilter((item, text) -> item.getNombreprovee().contains(text));
-        gridPane.add(comboProveedor, 1, 2);
-
         tabla.getSelectionModel().setCellSelectionEnabled(true);
         tabla.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         tabla.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
-        tabla.setOnKeyPressed(evt -> {            
-            if ( evt.getCode().isDigitKey()) {
+        tabla.setOnKeyPressed(evt -> {
+            if (evt.getCode().isDigitKey()) {
                 final TablePosition focusedCell = tabla.focusModelProperty().get().focusedCellProperty().get();
                 tabla.edit(focusedCell.getRow(), focusedCell.getTableColumn());
             }
@@ -255,16 +207,18 @@ public class DatosDeOrdenDeCompraController implements Initializable {
                                     seleccionandoTodos(false);
                                     RecepcionDePedido ped = ((RecepcionDePedido) getTableView().getItems().get(getIndex()));
                                     FXMLLoader loader = new FXMLLoader(getClass().getResource(fx.NavegadorDeContenidos.RECEPCION_DE_PEDIDOS));
-                                    AnchorPane root = loader.load();
+                                    AnchorPane ap = loader.load();
 
                                     RecepcionDePedidosController rpc = (RecepcionDePedidosController) loader.getController();
                                     rpc.setListaFacturas(listaFacturas);
                                     rpc.setPed(ped);
 
                                     Stage stage = new Stage();
-                                    Scene scene = new Scene(root);
+                                    Scene scene = new Scene(ap);
                                     stage.setScene(scene);
-                                    stage.showAndWait();
+                                    stage.initOwner(root.getScene().getWindow());
+                                    stage.initModality(Modality.APPLICATION_MODAL);
+                                    stage.showAndWait();                                    
                                     tabla.refresh();
                                 } catch (IOException ex) {
                                     Logger.getLogger(DatosDeOrdenDeCompraController.class.getName()).log(Level.SEVERE, null, ex);
@@ -286,7 +240,6 @@ public class DatosDeOrdenDeCompraController implements Initializable {
         });
         colCantPend.setCellValueFactory(new PropertyValueFactory("pendiente"));
         colCantPend.setCellFactory(tc -> new FormatCell.ColorYRecibirPedido());
-                
 
         colValorFinal.setCellValueFactory(new PropertyValueFactory("preciofinal"));
         colValorFinal.setCellFactory(tc -> new FormatCell.CurrencyCell<>());
@@ -321,80 +274,6 @@ public class DatosDeOrdenDeCompraController implements Initializable {
             } finally {
                 con.CERRAR();
             }
-        }
-    }
-
-    @FXML
-    void guardarOrden(ActionEvent evt) {
-//        Platform.runLater(() -> {
-//            btnGuardar.setDisable(true);
-//        });
-        if (cjfecha.getValue() == null) {
-            util.Metodos.alert("Mensaje", "Seleccione una fecha", null, Alert.AlertType.WARNING, null, null);
-            return;
-        }
-        if (comboProveedor.getValue() == null) {
-            util.Metodos.alert("Mensaje", "Seleccione un proveedor", null, Alert.AlertType.WARNING, null, null);
-            return;
-        }
-        if (comboFormaPago.getValue() == null) {
-            util.Metodos.alert("Mensaje", "Seleccione una forma de pago", null, Alert.AlertType.WARNING, null, null);
-            return;
-        }
-        if (cjiva.getText().isEmpty()) {
-            util.Metodos.alert("Mensaje", "Ingrese el valor del iva", null, Alert.AlertType.WARNING, null, null);
-            return;
-        }
-
-        OrdenDeCompra occ = new OrdenDeCompra();
-        if (getOc() == null) {
-            occ.setIdordendecompra(0);
-        } else {
-            occ.setIdordendecompra(this.getOc().getIdordendecompra());
-        }
-        occ.setNumerodeorden(Integer.parseInt(cjnumerodeorden.getText()));
-        occ.setFechadeorden(cjfecha.getValue());
-        occ.setProveedor(comboProveedor.getValue());
-        occ.setCentrodecostos(cjcentrodecostos.getText());
-        occ.setContacto(cjcontacto.getText());
-        occ.setCargoflete(cjcargoflete.getText());
-        occ.setTransportador(cjtransportadora.getText());
-        occ.setNumerodeguia(cjnumerodeguia.getText());
-        if (cjiva.getText().isEmpty() || checkExentoIva.isSelected()) {
-            cjiva.setText("0");
-        }
-        occ.setIva(Integer.parseInt(cjiva.getText()));
-        occ.setExentodeiva(checkExentoIva.isSelected());
-        occ.setFormadepago(comboFormaPago.getValue().toString());
-        occ.setObservaciones(cjobservaciones.getText());
-
-        oc = occ;
-
-        con = new Conexion();
-        try {
-            idorden = ocDAO.guardar(oc, con);
-
-            HashMap<String, Object> p = new HashMap<>();
-            p.put("IDORDEN", idorden);
-            try {
-                util.Metodos.generarReporte(p, "ORDEN_DE_COMPRA");
-            } catch (JRException | IOException ex) {
-                Logger.getLogger(GuardarOrdenDeCompraController.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            //((Stage)root.getScene().getWindow()).close();            
-        } catch (SQLException ex) {
-            try {
-                con.getCon().rollback();
-            } catch (SQLException ex1) {
-                Logger.getLogger(GuardarOrdenDeCompraController.class.getName()).log(Level.SEVERE, null, ex1);
-            }
-            Logger.getLogger(GuardarOrdenDeCompraController.class.getName()).log(Level.SEVERE, null, ex);
-            util.Metodos.alert("Mensaje", "Ocurrio un error al intentar guardar la orden de compra", null, Alert.AlertType.ERROR, ex, null);
-        } finally {
-            con.CERRAR();
-//            Platform.runLater(() -> {
-//                btnGuardar.setDisable(false);
-//            });
         }
     }
 
@@ -544,82 +423,62 @@ public class DatosDeOrdenDeCompraController implements Initializable {
 
     public void setOc(OrdenDeCompra oc) {
         this.oc = oc;
-        if (oc == null) {
-            cjnumerodeorden.setText("" + (util.Metodos.getConsecutivo("numeroordendecompra", false) + 1));
-        } else {
-            cjnumerodeorden.setText(oc.getNumerodeorden() + "");
-            cjfecha.setValue(oc.getFechadeorden());
-            comboProveedor.getItems().stream().filter(pv -> (oc.getProveedor().getNombreprovee().equals(pv.getNombreprovee()))).findFirst().ifPresent(p -> {
-                comboProveedor.getSelectionModel().select(p);
-            });
-//            try {
-//                comboCentroDeCostos.getItems().stream().filter(cc -> (oc.getCentrodecostos().getCentrodecostos().equals(cc.getCentrodecostos()))).findFirst().ifPresent(p->{comboCentroDeCostos.getSelectionModel().select(p);});
-//            }catch(java.lang.NullPointerException e){}
-            cjcentrodecostos.setText(oc.getCentrodecostos());
-            cjcontacto.setText(oc.getContacto());
-            cjcargoflete.setText(oc.getCargoflete());
-            cjtransportadora.setText(oc.getTransportador());
-            cjnumerodeguia.setText(oc.getNumerodeguia());
-            cjiva.setText("" + oc.getIva());
-            checkExentoIva.setSelected(oc.isExentodeiva());
-            comboFormaPago.setValue(oc.getFormadepago());
-            cjobservaciones.setText(oc.getObservaciones());
-            con = new Conexion();
 
-            String sql = "SELECT p.idproducto, p.nombreproducto, ped.idpedido, ped.cantidadsolicitada, ped.precioinicial, \n"
-                    + "count(rp.cantidadrecibida) AS entregas, sum(rp.cantidadrecibida) as recibidos,\n"
-                    + "(ped.cantidadsolicitada-sum(rp.cantidadrecibida)) as pendiente\n"
-                    + "FROM ordendecompra oc\n"
-                    + "INNER JOIN pedidos ped ON ped.idordendecompra=oc.idordendecompra\n"
-                    + "LEFT JOIN recepciondepedidos rp ON rp.idpedido=ped.idpedido\n"
-                    + "INNER JOIN producto p ON p.idproducto=ped.idproducto\n"
-                    + "WHERE oc.idordendecompra=" + this.oc.getIdordendecompra() + "\n"
-                    + "GROUP BY oc.idordendecompra, p.idproducto, ped.idpedido;";
-            try {
-                ResultSet rs = con.CONSULTAR(sql);
-                int row = 0;
-                while (rs.next()) {
-                    RecepcionDePedido rp = new RecepcionDePedido();
+        con = new Conexion();
 
-                    Producto p = new Producto();
-                    p.setIdproducto(rs.getInt("idproducto"));
-                    p.setNombreproducto(rs.getString("nombreproducto"));
+        String sql = "SELECT p.idproducto, p.nombreproducto, ped.idpedido, ped.cantidadsolicitada, ped.precioinicial, \n"
+                + "count(rp.cantidadrecibida) AS entregas, sum(rp.cantidadrecibida) as recibidos,\n"
+                + "(ped.cantidadsolicitada-sum(rp.cantidadrecibida)) as pendiente\n"
+                + "FROM ordendecompra oc\n"
+                + "INNER JOIN pedidos ped ON ped.idordendecompra=oc.idordendecompra\n"
+                + "LEFT JOIN recepciondepedidos rp ON rp.idpedido=ped.idpedido\n"
+                + "INNER JOIN producto p ON p.idproducto=ped.idproducto\n"
+                + "WHERE oc.idordendecompra=" + this.oc.getIdordendecompra() + "\n"
+                + "GROUP BY oc.idordendecompra, p.idproducto, ped.idpedido;";
+        try {
+            ResultSet rs = con.CONSULTAR(sql);
+            int row = 0;
+            while (rs.next()) {
+                RecepcionDePedido rp = new RecepcionDePedido();
 
-                    Pedido ped = new Pedido();
-                    ped.setIdpedido(rs.getInt("idpedido"));
-                    ped.setCantidadsolicitada(rs.getDouble("cantidadsolicitada"));
-                    ped.setPrecioinicial(rs.getDouble("precioinicial"));
-                    ped.setProducto(p);
-                    ped.setOc(oc);
-                    ped.setSelected(false);
+                Producto p = new Producto();
+                p.setIdproducto(rs.getInt("idproducto"));
+                p.setNombreproducto(rs.getString("nombreproducto"));
 
-                    rp.setPedido(ped);
-                    rp.setCantidadrecibida(rs.getDouble("recibidos"));
-                    rp.setPreciofinal(rs.getDouble("precioinicial"));
-                    rp.setPendiente((ped.getCantidadsolicitada() - rp.getCantidadrecibida()));
+                Pedido ped = new Pedido();
+                ped.setIdpedido(rs.getInt("idpedido"));
+                ped.setCantidadsolicitada(rs.getDouble("cantidadsolicitada"));
+                ped.setPrecioinicial(rs.getDouble("precioinicial"));
+                ped.setProducto(p);
+                ped.setOc(oc);
+                ped.setSelected(false);
 
-                    tabla.getItems().add(row, rp);
-                    row++;
-                }
-                for (int i = 0; i < tabla.getColumns().size(); i++) {
-                    util.Metodos.changeSizeOnColumn(tabla.getColumns().get(i), tabla);
-                }
+                rp.setPedido(ped);
+                rp.setCantidadrecibida(rs.getDouble("recibidos"));
+                rp.setPreciofinal(rs.getDouble("precioinicial"));
+                rp.setPendiente((ped.getCantidadsolicitada() - rp.getCantidadrecibida()));
 
-                sql = "SELECT * FROM facturas WHERE idordendecompra=" + this.oc.getIdordendecompra();
-                rs = con.CONSULTAR(sql);
-                while (rs.next()) {
-                    Factura cot = new Factura();
-                    cot.setIdfactura(rs.getInt("idfactura"));
-                    cot.setArchivo(rs.getBytes("archivo"));
-                    cot.setFormato(rs.getString("formato"));
-                    cot.setNombrearchivo(rs.getString("nombrearchivo"));
-
-                    listaFacturas.add(cot);
-                }
-                btnAdjuntar.setText("Facturas (" + listaFacturas.size() + ")");
-            } catch (SQLException ex) {
-                Logger.getLogger(DatosDeOrdenDeCompraController.class.getName()).log(Level.SEVERE, null, ex);
+                tabla.getItems().add(row, rp);
+                row++;
             }
+            for (int i = 0; i < tabla.getColumns().size(); i++) {
+                util.Metodos.changeSizeOnColumn(tabla.getColumns().get(i), tabla);
+            }
+
+            sql = "SELECT * FROM facturas WHERE idordendecompra=" + this.oc.getIdordendecompra();
+            rs = con.CONSULTAR(sql);
+            while (rs.next()) {
+                Factura cot = new Factura();
+                cot.setIdfactura(rs.getInt("idfactura"));
+                cot.setArchivo(rs.getBytes("archivo"));
+                cot.setFormato(rs.getString("formato"));
+                cot.setNombrearchivo(rs.getString("nombrearchivo"));
+
+                listaFacturas.add(cot);
+            }
+            btnAdjuntar.setText("Facturas (" + listaFacturas.size() + ")");
+        } catch (SQLException ex) {
+            Logger.getLogger(DatosDeOrdenDeCompraController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -645,6 +504,7 @@ public class DatosDeOrdenDeCompraController implements Initializable {
     }
 
     int n = 1;
+
     @FXML
     private void recibirPedido(ActionEvent event) throws IOException {
 
@@ -667,20 +527,20 @@ public class DatosDeOrdenDeCompraController implements Initializable {
 
         rootvBox.setSpacing(5);
         rootvBox.setPadding(new Insets(10, 10, 20, 10));
-        
+
         btnGuardar.setOnAction(evt -> {
             LocalDate fecha = cjFecha.getValue();
             String factura = cjFactura.getText();
             String remision = cjRemision.getText();
-            
+
             RecepcionDePedido rp = new RecepcionDePedido();
             rp.setFactura(factura);
             rp.setFechaderecibido(fecha);
             rp.setRemision(remision);
-            
+
             con = new Conexion();
             RecepcionDePedidoDAO rpDAO = new RecepcionDePedidoDAO(con);
-            
+
             listaRecibidos.stream().map((i) -> {
                 rp.setCantidadrecibida(i.getPendiente());
                 return i;
@@ -695,7 +555,7 @@ public class DatosDeOrdenDeCompraController implements Initializable {
                 try {
                     if (rpDAO.guardar(rp) > 0) {
                         i.setCantidadrecibida((i.getCantidadrecibida() + i.getPendiente()));
-                        i.setPendiente(i.getPedido().getCantidadsolicitada()-i.getCantidadrecibida());
+                        i.setPendiente(i.getPedido().getCantidadsolicitada() - i.getCantidadrecibida());
                         n++;
                     }
                 } catch (SQLException ex) {
@@ -703,10 +563,10 @@ public class DatosDeOrdenDeCompraController implements Initializable {
                 }
             });
             con.CERRAR();
-            
-            if((n-1)==listaRecibidos.size()){
-                ((Stage)rootvBox.getScene().getWindow()).close();
-            }            
+
+            if ((n - 1) == listaRecibidos.size()) {
+                ((Stage) rootvBox.getScene().getWindow()).close();
+            }
         });
 
         Stage stage = new Stage();
@@ -719,7 +579,7 @@ public class DatosDeOrdenDeCompraController implements Initializable {
         stage.initModality(Modality.WINDOW_MODAL);
         stage.showAndWait();
 
-        if((n-1)==listaRecibidos.size()){
+        if ((n - 1) == listaRecibidos.size()) {
             tabla.refresh();
             seleccionandoTodos(false);
             listaRecibidos.clear();
@@ -742,6 +602,32 @@ public class DatosDeOrdenDeCompraController implements Initializable {
             }
         });
         tabla.refresh();
+    }
+
+    @FXML
+    private void verOrden(ActionEvent event) throws IOException, SQLException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(fx.NavegadorDeContenidos.GUARDAR_ORDENDECOMPRA));
+        AnchorPane ap = loader.load();
+        GuardarOrdenDeCompraController occ = (GuardarOrdenDeCompraController) loader.getController();
+        
+        con = new Conexion();
+        ocDAO = new OrdenDeCompraDAO(con);
+        
+        occ.setOc(ocDAO.getOrdenes(oc.getIdordendecompra()).get(0));
+        
+        Stage stage = new Stage();
+
+        Scene scene = new Scene(ap);
+        stage.setScene(scene);
+        stage.setAlwaysOnTop(true);
+        
+        Rectangle2D tam = Screen.getPrimary().getBounds();
+        
+        int mitad_ancho = (int) (tam.getWidth()/2);
+        int mitad_alto = (int) (tam.getHeight()/2);
+        stage.setX(mitad_ancho);
+        
+        stage.showAndWait();
     }
 
 }

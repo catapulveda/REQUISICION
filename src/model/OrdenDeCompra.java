@@ -27,13 +27,27 @@ public class OrdenDeCompra {
     private StringProperty observaciones;
     private IntegerProperty iva;
     private BooleanProperty exentodeiva;
+    private final DoubleProperty valoriva = new SimpleDoubleProperty();   
+    
     private Usuario idusuario;
     private ObjectProperty<LocalDate> fechaderegistro;
     private final DoubleProperty solicitados = new SimpleDoubleProperty();
     private final DoubleProperty recibidos = new SimpleDoubleProperty();   
         
     public OrdenDeCompra() {
-    }        
+    }
+    
+    public double getValoriva() {
+        return valoriva.get();
+    }
+
+    public void setValoriva(double value) {
+        valoriva.set(value);
+    }
+
+    public DoubleProperty valorivaProperty() {
+        return valoriva;
+    }
 
     public final int getIdordendecompra() {
         return idordendecompra.get();

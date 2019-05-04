@@ -43,7 +43,7 @@ public class OrdenesDeCompraController implements Initializable {
     @FXML TableColumn colProveedor;
     @FXML TableColumn<OrdenDeCompra, String> colCentroDeCostos;
     
-    OrdenDeCompraDAO ocDAO = new OrdenDeCompraDAO();
+    OrdenDeCompraDAO ocDAO;
     
     Conexion con;
     @FXML
@@ -55,8 +55,9 @@ public class OrdenesDeCompraController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
                 
         con = new Conexion();
+        ocDAO = new OrdenDeCompraDAO(con);
         try {
-            listaOrdenes.setAll(ocDAO.getOrdenes(con));            
+            listaOrdenes.setAll(ocDAO.getOrdenes(0));            
         } catch (Exception ex) {
             util.Metodos.alert("Error", "No se cargaron las ordendes de compra.", null, Alert.AlertType.ERROR, ex, null);
         }finally{

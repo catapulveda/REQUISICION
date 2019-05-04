@@ -18,20 +18,18 @@ import model.Proveedor;
 
 public class OrdenDeCompraDAO {
 
-    public OrdenDeCompraDAO() {
+    private Conexion con;
+    
+    public OrdenDeCompraDAO(Conexion cx) {
+        this.con = cx;
     }
 
-    public ObservableList<OrdenDeCompra> getOrdenes(Conexion con) throws SQLException {
+    public ObservableList<OrdenDeCompra> getOrdenes(int idordendecompra) throws SQLException {
         ObservableList<OrdenDeCompra> listaOrdenes = FXCollections.observableArrayList();
         Task<ObservableList<OrdenDeCompra>> task = new Task<ObservableList<OrdenDeCompra>>() {
             @Override
             protected ObservableList<OrdenDeCompra> call() throws Exception {
-                String sql = "SELECT oc.*, p.* "
-                        + "FROM ordendecompra oc "
-                        + "INNER JOIN proveedor p USING(idproveedor) "
-                        + "ORDER BY oc.numerodeorden DESC";
-                
-                sql = "select oc.*, pv.*, sum(ped.cantidadsolicitada) as totales, sum(r.recibidos) as recibidos \n"
+                String sql = "select oc.*, pv.*, sum(ped.cantidadsolicitada) as totales, sum(r.recibidos) as recibidos \n"
                         + "from ordendecompra oc \n"
                         + "inner join proveedor pv on pv.idproveedor=oc.idproveedor\n"
                         + "LEFT join pedidos ped on ped.idordendecompra=oc.idordendecompra\n"
@@ -40,8 +38,9 @@ public class OrdenDeCompraDAO {
                         + "	from recepciondepedidos rp \n"
                         + "	group by rp.idpedido order by 1 asc\n"
                         + ") as r on r.idpedido=ped.idpedido\n"
-                        + "group by oc.idordendecompra, pv.idproveedor\n"
-                        + "order by oc.numerodeorden desc;";
+                        + " "+((idordendecompra>0)?"WHERE oc.idordendecompra="+idordendecompra:" ")+" "
+                        + " group by oc.idordendecompra, pv.idproveedor\n"
+                        + " order by oc.numerodeorden desc;";
                 
                 ResultSet rs = con.CONSULTAR(sql);
                 while (rs.next()) {
@@ -95,7 +94,7 @@ public class OrdenDeCompraDAO {
         return null;
     }
 
-    public int guardar(OrdenDeCompra oc, Conexion con) throws SQLException {
+    public int guardar(OrdenDeCompra oc) throws SQLException {
         String sql = null;
         if (oc.getIdordendecompra() == 0) {
             sql = "INSERT INTO public.ordendecompra(\n"
@@ -103,12 +102,12 @@ public class OrdenDeCompraDAO {
                     + "contacto, concargoa, transportador, "
                     + "numerodeguia, formadepago, "
                     + "idusuario, observaciones, "
-                    + "iva, exentodeiva)\n"
+                    + "iva, exentodeiva, valoriva)\n"
                     + "	VALUES ('" + oc.getFechadeorden() + "', " + oc.getProveedor().getIdproveedor() + ", '" + oc.getCentrodecostos() + "', "
                     + " '" + oc.getContacto() + "', '" + oc.getCargoflete() + "', '" + oc.getTransportador() + "', "
                     + " '" + oc.getNumerodeguia() + "', '" + oc.getFormadepago() + "', "
                     + " " + model.Usuario.getInstanceUser(0, null, null, null).getIdusuario() + ", '" + oc.getObservaciones() + "', "
-                    + " " + oc.getIva() + ", '" + oc.isExentodeiva() + "');";
+                    + " " + oc.getIva() + ", '" + oc.isExentodeiva() + "' , "+oc.getValoriva()+");";
         } else {
             sql = "UPDATE public.ordendecompra SET "
                     + "	fechadeorden='" + oc.getFechadeorden() + "', idproveedor=" + oc.getProveedor().getIdproveedor() + ", "
@@ -118,7 +117,8 @@ public class OrdenDeCompraDAO {
                     + "numerodeguia='" + oc.getNumerodeguia() + "', formadepago='" + oc.getFormadepago() + "', "
                     + "idusuario=" + model.Usuario.getInstanceUser(0, null, null, null).getIdusuario() + ", "
                     + "observaciones='" + oc.getObservaciones() + "', "
-                    + "iva=" + oc.getIva() + ", exentodeiva='" + oc.isExentodeiva() + "' WHERE idordendecompra=" + oc.getIdordendecompra();
+                    + "iva=" + oc.getIva() + ", exentodeiva='"+oc.isExentodeiva()+"' , valoriva="+oc.getValoriva()+" "
+                    + "WHERE idordendecompra=" + oc.getIdordendecompra();
         }
         System.out.println(sql);
         PreparedStatement pst = con.getCon().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);

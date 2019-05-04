@@ -763,7 +763,7 @@ public class RequisicionNuevaController implements Initializable {
         this.requisicion = req;
         try {
             con = new Conexion();
-
+            OrdenDeCompraDAO ocDAO = new OrdenDeCompraDAO(con);
             PedidoDAO pDAO = new PedidoDAO();
             tablaPedido.getItems().setAll(pDAO.getPedidos(getRequisicion().getIdrequisicion(), con));
             filtro = new FilteredList(tablaPedido.getItems(), p -> true);
@@ -771,9 +771,9 @@ public class RequisicionNuevaController implements Initializable {
 
             cargarCotizaciones();
 
-            OrdenDeCompraDAO ocDAO = new OrdenDeCompraDAO();
+            
             listaOrdenes.removeAll(listaOrdenes);
-            listaOrdenes.setAll(ocDAO.getOrdenes(con));
+            listaOrdenes.setAll(ocDAO.getOrdenes(0));
         } catch (SQLException ex) {
             util.Metodos.alert("ERROR", null, "NO SE PUDO CARGAR LOS DATOS DE LA REQUISICION", Alert.AlertType.ERROR, ex, null);
             Logger.getLogger(RequisicionNuevaController.class.getName()).log(Level.SEVERE, null, ex);

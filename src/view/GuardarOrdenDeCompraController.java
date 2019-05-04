@@ -55,7 +55,7 @@ public class GuardarOrdenDeCompraController implements Initializable {
     
     ProveedorDAO pvDAO = new ProveedorDAO();
     CentroDeCostosDAO ccDAO = new CentroDeCostosDAO();
-    OrdenDeCompraDAO ocDAO = new OrdenDeCompraDAO();
+    OrdenDeCompraDAO ocDAO;
     
     Conexion con;
     
@@ -67,16 +67,11 @@ public class GuardarOrdenDeCompraController implements Initializable {
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-            
-        con = new Conexion();
-        
         comboFormaPago.getItems().addAll("CREDITO","CONTADO","DEBITO");
         
         comboProveedor.setItems(pvDAO.getProveedores());
         comboProveedor.setFilter((item, text) -> item.getNombreprovee().contains(text));
-        gridPane.add(comboProveedor, 1, 2);          
-        
-        con.CERRAR();
+        gridPane.add(comboProveedor, 1, 2);                 
     }
     
     @FXML
@@ -97,7 +92,11 @@ public class GuardarOrdenDeCompraController implements Initializable {
             return;
         }
         if(cjiva.getText().isEmpty()){
-            util.Metodos.alert("Mensaje", "Ingrese el valor del iva", null, Alert.AlertType.WARNING, null, null);
+            util.Metodos.alert("Mensaje", "Ingrese el porcentaje de iva", null, Alert.AlertType.WARNING, null, null);
+            return;
+        }
+        if(cjvaloriva.getText().isEmpty()){
+            util.Metodos.alert("Mensaje", "Ingrese el valor calculado del iva", null, Alert.AlertType.WARNING, null, null);
             return;
         }
                 
@@ -122,23 +121,26 @@ public class GuardarOrdenDeCompraController implements Initializable {
         occ.setExentodeiva(checkExentoIva.isSelected());
         occ.setFormadepago(comboFormaPago.getValue().toString());
         occ.setObservaciones(cjobservaciones.getText());        
+        occ.setValoriva(Double.parseDouble(cjvaloriva.getText()));
         
         oc = occ;
         
         con = new  Conexion();
-        
+        ocDAO = new OrdenDeCompraDAO(con);
         try {
             con.getCon().setAutoCommit(false);
-            idorden = ocDAO.guardar(oc, con);
-            listaSeleccionados.forEach(ped->{
+            idorden = ocDAO.guardar(oc);
+            if(listaSeleccionados!=null){
+                listaSeleccionados.forEach(ped->{
                 try {
                     if(ped.isSelected()){
                         con.GUARDAR("UPDATE pedidos SET idordendecompra="+idorden+" WHERE idpedido="+ped.getIdpedido()+";");
                     }                    
                 } catch (SQLException ex) {
                     Logger.getLogger(GuardarOrdenDeCompraController.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            });
+                    }
+                });
+            }
             con.getCon().commit();
             HashMap<String, Object> p = new HashMap<>();p.put("IDORDEN", idorden);try {util.Metodos.generarReporte(p, "ORDEN_DE_COMPRA");} catch (JRException | IOException ex) {Logger.getLogger(GuardarOrdenDeCompraController.class.getName()).log(Level.SEVERE, null, ex);}
             ((Stage)anchorPane.getScene().getWindow()).close();
@@ -163,25 +165,21 @@ public class GuardarOrdenDeCompraController implements Initializable {
         if(oc==null){
             cjnumerodeorden.setText(""+(util.Metodos.getConsecutivo("numeroordendecompra", false)+1));
         }else{
-            cjnumerodeorden.setText(oc.getNumerodeorden()+"");
+            cjnumerodeorden.setText(oc.getNumerodeorden() + "");
             cjfecha.setValue(oc.getFechadeorden());
-            comboProveedor.getItems().stream().filter(pv -> (oc.getProveedor().getNombreprovee().equals(pv.getNombreprovee()))).findFirst().ifPresent(p->{comboProveedor.getSelectionModel().select(p);});
-//            try {
-//                comboCentroDeCostos.getItems()
-//                        .stream()
-//                        .filter(cc -> (oc.getCentrodecostos().getCentrodecostos().equals(cc.getCentrodecostos())))
-//                        .findFirst()
-//                        .ifPresent(p->{comboCentroDeCostos.getSelectionModel().select(p);});
-//            } catch (java.lang.NullPointerException e) {}
+            comboProveedor.getItems().stream().filter(pv -> (oc.getProveedor().getNombreprovee().equals(pv.getNombreprovee()))).findFirst().ifPresent(p -> {
+                comboProveedor.getSelectionModel().select(p);
+            });
             cjcentrodecostos.setText(oc.getCentrodecostos());
             cjcontacto.setText(oc.getContacto());
             cjcargoflete.setText(oc.getCargoflete());
             cjtransportadora.setText(oc.getTransportador());
             cjnumerodeguia.setText(oc.getNumerodeguia());
-            cjiva.setText(""+oc.getIva());
+            cjiva.setText("" + oc.getIva());
             checkExentoIva.setSelected(oc.isExentodeiva());
             comboFormaPago.setValue(oc.getFormadepago());
             cjobservaciones.setText(oc.getObservaciones());
+            cjvaloriva.setText(""+oc.getValoriva());
         }
     }
 
