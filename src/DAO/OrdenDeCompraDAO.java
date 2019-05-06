@@ -71,6 +71,7 @@ public class OrdenDeCompraDAO {
                     oc.setFechadeorden(rs.getDate("fechadeorden").toLocalDate());
                     oc.setFormadepago(rs.getString("formadepago"));
                     oc.setIva(rs.getInt("iva"));
+                    oc.setValoriva(rs.getDouble("valoriva"));
                     oc.setNumerodeguia(rs.getString("numerodeguia"));
                     oc.setObservaciones(rs.getString("observaciones"));
                     oc.setTransportador(rs.getString("transportador"));

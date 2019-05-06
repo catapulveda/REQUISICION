@@ -54,6 +54,9 @@ WHERE idordendecompra=$P{IDORDEN_TABLA} ORDER BY p.nombreproducto;]]>
 		<variable name="SUBTOTAL" class="java.lang.Double" calculation="Sum">
 			<variableExpression><![CDATA[$F{total}]]></variableExpression>
 		</variable>
+		<variable name="TOTALIVA" class="java.lang.Double">
+			<variableExpression><![CDATA[($P{valoriva}==0)?$V{SUBTOTAL}*$P{IVA}/100:$P{valoriva}]]></variableExpression>
+		</variable>
 	</subDataset>
 	<parameter name="IDORDEN" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
@@ -538,7 +541,7 @@ req.numerorequisicion, ur.nombreusuario, uc.nombreusuario;]]>
 									<textElement textAlignment="Right" verticalAlignment="Middle">
 										<font fontName="Ebrima" size="9"/>
 									</textElement>
-									<textFieldExpression><![CDATA[$V{SUBTOTAL}*$P{IVA}/100+$V{SUBTOTAL}]]></textFieldExpression>
+									<textFieldExpression><![CDATA[$V{SUBTOTAL}+$V{TOTALIVA}]]></textFieldExpression>
 								</textField>
 							</jr:tableFooter>
 							<jr:columnGroup width="90" uuid="7122428f-d7ab-44ec-9320-d8f81c9af6ad">
@@ -548,7 +551,7 @@ req.numerorequisicion, ur.nombreusuario, uc.nombreusuario;]]>
 										<textElement textAlignment="Right" verticalAlignment="Middle">
 											<font fontName="Ebrima" size="9"/>
 										</textElement>
-										<textFieldExpression><![CDATA[($P{valoriva}==0)?$V{SUBTOTAL}*$P{IVA}/100:$P{valoriva}]]></textFieldExpression>
+										<textFieldExpression><![CDATA[$V{TOTALIVA}]]></textFieldExpression>
 									</textField>
 								</jr:tableFooter>
 								<jr:column width="90" uuid="9c99b378-9fb9-48bf-bcde-883dff353179">
