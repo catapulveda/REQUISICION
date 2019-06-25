@@ -18,7 +18,7 @@ public class Conexion {
         try{
             Class.forName("org.postgresql.Driver");
 //            con = DriverManager.getConnection("jdbc:postgresql://192.168.10.5:5432/REQUISICION", "postgres", "cdm");
-            con = DriverManager.getConnection("jdbc:postgresql://localhost:5432/REQUISICION", "postgres", "cdm");
+            con = DriverManager.getConnection("jdbc:postgresql://192.168.10.5:5432/REQUISICION", "postgres", "cdm");
             st = con.createStatement (ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
         }catch(ClassNotFoundException | SQLException ex){
             Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex); 
