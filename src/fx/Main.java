@@ -21,7 +21,7 @@ public class Main extends Application {
     private double yOffset = 0;
     
     @Override
-    public void start(Stage primaryStage) throws IOException {
+    public void start(Stage stage) throws IOException {
                
         FXMLLoader loader = new FXMLLoader();
         Parent mainPane = loader.load(getClass().getResourceAsStream(NavegadorDeContenidos.LOGIN));
@@ -36,22 +36,24 @@ public class Main extends Application {
         mainPane.setOnMouseDragged(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                primaryStage.setX(event.getScreenX() - xOffset);
-                primaryStage.setY(event.getScreenY() - yOffset);
+                stage.setX(event.getScreenX() - xOffset);
+                stage.setY(event.getScreenY() - yOffset);
             }
         });
 
-        primaryStage.setTitle("Iniciar sesión");
+        stage.setTitle("Iniciar sesión");
         
         Scene scene = new Scene(mainPane);
         scene.getStylesheets().add("bootstrapfx.css");
         
-        primaryStage.setScene(scene);        
+        stage.setScene(scene);        
         
-        primaryStage.getIcons().add(new Image(getClass().getClassLoader().getResource("images/LOGO_CONSORCIO.png").toString()));
-        primaryStage.setResizable(false);
+        stage.getIcons().add(new Image(getClass().getClassLoader().getResource("images/LOGO_CONSORCIO.png").toString()));
+        stage.setResizable(false);
         
-        primaryStage.show();        
+        
+        
+        stage.show();        
     }
 
     /**

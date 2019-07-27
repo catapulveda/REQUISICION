@@ -166,9 +166,10 @@ public class RegistrarRecepcionDePedidoController implements Initializable {
 
     @FXML
     private void abrirArchivo(MouseEvent event) {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Buscar Imagen");       
-        File file = fileChooser.showOpenDialog(ap.getScene().getWindow());
+        FileChooser fc = new FileChooser();
+        fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("Archivos de imagen y pdf", "*.png","*.jpg","*.jpeg","*.pdf"));
+        fc.setTitle("Buscar archivo");
+        File file = fc.showOpenDialog(ap.getScene().getWindow());
         // Mostar la imagen
         if (file != null) {            
             adjuntarFactura(file.getAbsoluteFile());

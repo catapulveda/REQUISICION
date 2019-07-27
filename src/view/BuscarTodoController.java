@@ -1,10 +1,7 @@
 package view;
 
 import DAO.BuscarTodoDAO;
-import DAO.ProductoDAO;
 import java.net.URL;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ResourceBundle;
 import java.util.function.Predicate;
 import javafx.application.Platform;
@@ -15,7 +12,6 @@ import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -30,10 +26,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import model.BuscarTodo;
 import model.Conexion;
-import model.OrdenDeCompra;
-import model.Producto;
-import model.Proveedor;
-import model.Requisicion;
 
 public class BuscarTodoController implements Initializable {
 
