@@ -736,7 +736,7 @@ public class RequisicionNuevaController implements Initializable {
 
     public void setRc(RequisicionController rc) {
         this.rc = rc;
-    }
+    }    
 
     void organizarColumnas() {
         for (int i = 1; i < tablaPedido.getColumns().size(); i++) {
