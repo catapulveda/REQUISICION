@@ -61,6 +61,7 @@ public class ButtonCellOrdenes<T> extends TableCell<T, String> {
                 }
             });
             btnImprimr.setOnAction(evt->{
+                btnImprimr.setGraphic(new ProgressIndicator());
                 Platform.runLater(() -> {                    
                     HashMap<String, Object> p = new HashMap<>();
                     p.put("IDORDEN", ((OrdenDeCompra) getTableView().getItems().get(getIndex())).getIdordendecompra());
